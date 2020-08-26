@@ -40,8 +40,8 @@ func main() {
 
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
-			EnvVars:  []string{"PARAMETER_LOG_LEVEL", "VELA_LOG_LEVEL", "DOCKER_LOG_LEVEL"},
-			FilePath: string("/vela/parameters/docker/log_level,/vela/secrets/docker/log_level"),
+			EnvVars:  []string{"PARAMETER_LOG_LEVEL", "VELA_LOG_LEVEL", "MAKISU_LOG_LEVEL"},
+			FilePath: string("/vela/parameters/makisu/log_level,/vela/secrets/makisu/log_level"),
 			Name:     "log.level",
 			Usage:    "set log level - options: (trace|debug|info|warn|error|fatal|panic)",
 			Value:    "info",
@@ -78,9 +78,19 @@ func run(c *cli.Context) error {
 
 	logrus.WithFields(logrus.Fields{
 		"code":     "https://github.com/go-vela/vela-makisu",
-		"docs":     "https://go-vela.github.io/docs/plugins/registry/docker",
+		"docs":     "https://go-vela.github.io/docs/plugins/registry/makisu",
 		"registry": "https://hub.docker.com/r/target/vela-makisu",
-	}).Info("Vela Docker Plugin")
+	}).Info("Vela Makisu Plugin")
 
-	return nil
+	// create the plugin
+	p := Plugin{}
+
+	// validate the plugin
+	err := p.Validate()
+	if err != nil {
+		return err
+	}
+
+	// execute the plugin
+	return p.Exec()
 }
