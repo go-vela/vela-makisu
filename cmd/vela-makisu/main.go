@@ -48,6 +48,12 @@ func main() {
 		},
 	}
 
+	// add config flags
+	app.Flags = append(app.Flags, configFlags...)
+
+	// add build flags
+	app.Flags = append(app.Flags, buildFlags...)
+
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
@@ -83,7 +89,13 @@ func run(c *cli.Context) error {
 	}).Info("Vela Makisu Plugin")
 
 	// create the plugin
-	p := Plugin{}
+	p := Plugin{
+		Config: &Config{
+			Password: c.String("config.password"),
+			URL:      c.String("config.registry"),
+			Username: c.String("config.username"),
+		},
+	}
 
 	// validate the plugin
 	err := p.Validate()

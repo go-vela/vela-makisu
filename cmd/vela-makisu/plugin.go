@@ -5,8 +5,6 @@
 package main
 
 import (
-	"os/exec"
-
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,26 +12,45 @@ import (
 type Plugin struct {
 	// build arguments loaded for the plugin
 	Build *Build
-}
-
-// Command formats and outputs the command necessary for
-// img to build and publish a Docker image.
-func (p *Plugin) Command() *exec.Cmd {
-	logrus.Debug("creating img command from plugin configuration")
-
-	return nil
+	// config arguments loaded for the plugin
+	Config *Config
 }
 
 // Exec formats and runs the commands for building and publishing a Docker image.
 func (p *Plugin) Exec() error {
 	logrus.Debug("running plugin with provided configuration")
 
-	return nil
+	// output makisu version for troubleshooting
+	err := execCmd(versionCmd())
+	if err != nil {
+		return err
+	}
+
+	// create config configuration
+	_, err = p.Config.Create()
+	if err != nil {
+		return err
+	}
+
+	// execute build action
+	return p.Build.Exec()
 }
 
 // Validate verifies the Plugin is properly configured.
 func (p *Plugin) Validate() error {
 	logrus.Debug("validating plugin configuration")
+
+	// validate config configuration
+	err := p.Config.Validate()
+	if err != nil {
+		return err
+	}
+
+	// validate build configuration
+	err = p.Build.Validate()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

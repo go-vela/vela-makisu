@@ -8,14 +8,22 @@ import (
 	"testing"
 )
 
-func TestMakisu_Plugin_Command(t *testing.T) {
-	// TODO Write test
-}
-
 func TestMakisu_Plugin_Exec(t *testing.T) {
 	// TODO Write test
 }
 
 func TestMakisu_Plugin_Validate(t *testing.T) {
-	// TODO Write test
+	// setup types
+	p := &Plugin{
+		Config: &Config{
+			Password: "superSecretPassword",
+			URL:      "index.docker.io",
+			Username: "octocat",
+		},
+	}
+
+	err := p.Validate()
+	if err != nil {
+		t.Errorf("Validate returned err: %v", err)
+	}
 }
