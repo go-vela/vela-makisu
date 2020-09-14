@@ -14,7 +14,7 @@ import (
 func TestImg_Push_Command(t *testing.T) {
 	// setup types
 	p := &Push{
-		ContextPath:    ".",
+		Path:           "/path/to/tar",
 		Pushes:         []string{"FOO"},
 		RegistryConfig: "{}",
 		Replicas:       []string{"FOO"},
@@ -52,8 +52,8 @@ func TestMakisu_Push_Exec_Error(t *testing.T) {
 func TestMakisu_Push_Validate(t *testing.T) {
 	// setup types
 	p := &Push{
-		ContextPath: ".",
-		Tag:         "latest",
+		Path: "/path/to/tar",
+		Tag:  "latest",
 	}
 
 	err := p.Validate()
@@ -77,7 +77,7 @@ func TestMakisu_Push_Validate_NoContextPath(t *testing.T) {
 func TestMakisu_Push_Validate_NoTag(t *testing.T) {
 	// setup types
 	p := &Push{
-		ContextPath: ".",
+		Path: "/path/to/tar",
 	}
 
 	err := p.Validate()

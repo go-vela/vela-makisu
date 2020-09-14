@@ -99,6 +99,12 @@ func run(c *cli.Context) error {
 			URL:      c.String("config.registry"),
 			Username: c.String("config.username"),
 		},
+		Push: &Push{
+			Path:           c.String("push.path"),
+			Pushes:         c.StringSlice("push.pushes"),
+			RegistryConfig: c.String("push.registry-config"),
+			Replicas:       c.StringSlice("push.replicas"),
+		},
 	}
 
 	// validate the plugin

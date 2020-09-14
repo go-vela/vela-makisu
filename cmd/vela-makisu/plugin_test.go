@@ -24,7 +24,7 @@ func TestMakisu_Plugin_Validate(t *testing.T) {
 		//nolint
 		Build: &Build{
 			BuildArgs:   []string{"FOO"},
-			ContextPath: ".",
+			Context:     ".",
 			Commit:      "b0bb040e6a6d71ddf98684349c42d36fa6c539ad",
 			Compression: "default",
 			DenyList:    []string{"FOO"},
@@ -56,7 +56,7 @@ func TestMakisu_Plugin_Validate(t *testing.T) {
 			Target:         "dev",
 		},
 		Push: &Push{
-			ContextPath:    ".",
+			Path:           ".",
 			Pushes:         []string{"FOO"},
 			RegistryConfig: "{}",
 			Replicas:       []string{"FOO"},

@@ -22,21 +22,53 @@ type (
 	// https://githup.com/uber/makisu/blob/master/docs/COMMAND.md
 	// nolint
 	Push struct {
-		// Push path for the contents of the image
-		ContextPath string
-		// Registries to push an image to
+		// enables setting the location of the tar file
+		Path string
+		// enables setting registries to push an image to
 		Pushes []string
-		// Set push-time variables
+		// enables setting the credentials for authentication
 		RegistryConfig string
-		// Push targets with alternative full image names "<registry>/<repo>:<tag>"
+		// enables pushing images with alternative full names
 		Replicas []string
-		// Image tag (required)
+		// enables setting the tag for an image
 		Tag string
 	}
 )
 
 // pushFlags represents for config settings on the cli.
-var pushFlags = []cli.Flag{}
+// nolint
+var pushFlags = []cli.Flag{
+	&cli.StringFlag{
+		EnvVars:  []string{"PARAMETER_PATH"},
+		FilePath: string("/vela/parameters/makisu/push/path,/vela/secrets/makisu/push/path"),
+		Name:     "push.context",
+		Usage:    "enables setting the location of the tar file",
+	},
+	&cli.StringSliceFlag{
+		EnvVars:  []string{"PARAMETER_PUSHES"},
+		FilePath: string("/vela/parameters/makisu/push/context,/vela/secrets/makisu/push/context"),
+		Name:     "push.pushes",
+		Usage:    "enables setting registries to push an image to",
+	},
+	&cli.StringFlag{
+		EnvVars:  []string{"PARAMETER_REGISTRY_CONFIG"},
+		FilePath: string("/vela/parameters/makisu/push/registry_config,/vela/secrets/makisu/push/registry_config"),
+		Name:     "push.regstry-config",
+		Usage:    "enables setting the credentials for authentication",
+	},
+	&cli.StringSliceFlag{
+		EnvVars:  []string{"PARAMETER_CONTEXT"},
+		FilePath: string("/vela/parameters/makisu/push/context,/vela/secrets/makisu/push/context"),
+		Name:     "push.replicas",
+		Usage:    "enables pushing images with alternative full names",
+	},
+	&cli.StringFlag{
+		EnvVars:  []string{"PARAMETER_TAG"},
+		FilePath: string("/vela/parameters/makisu/push/registry_config,/vela/secrets/makisu/push/registry_config"),
+		Name:     "push.tag",
+		Usage:    "enables setting the tag for an image",
+	},
+}
 
 // Command formats and outputs the Push command from
 // the provided configuration to push a Docker image.
@@ -80,7 +112,7 @@ func (p *Push) Command() *exec.Cmd {
 	}
 
 	// add the required directory param
-	flags = append(flags, p.ContextPath)
+	flags = append(flags, p.Path)
 
 	// nolint // this functionality is not exploitable the way
 	// the plugin accepts configuration
@@ -108,8 +140,8 @@ func (p *Push) Validate() error {
 	logrus.Trace("validating push plugin configuration")
 
 	// verify tag are provided
-	if len(p.ContextPath) == 0 {
-		return fmt.Errorf("no push context provided")
+	if len(p.Path) == 0 {
+		return fmt.Errorf("no push path provided")
 	}
 
 	// verify tag are provided

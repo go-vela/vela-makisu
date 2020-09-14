@@ -29,8 +29,8 @@ type (
 		Commit string
 		// Image compression level, could be 'no', 'speed', 'size', 'default' (default "default")
 		Compression string
-		// Build path for the contents of the image
-		ContextPath string
+		// enables setting the context for building an image
+		Context string
 		// deny list should be the list of locations to ignore within the resulting docker images
 		DenyList []string
 		// represents object to configure specific flags within Docker
@@ -234,7 +234,7 @@ func (b *Build) Command() *exec.Cmd {
 	}
 
 	// add the required directory param
-	flags = append(flags, b.ContextPath)
+	flags = append(flags, b.Context)
 
 	// nolint // this functionality is not exploitable the way
 	// the plugin accepts configuration
@@ -341,7 +341,7 @@ func (b *Build) Validate() error {
 	logrus.Trace("validating build plugin configuration")
 
 	// verify tag are provided
-	if len(b.ContextPath) == 0 {
+	if len(b.Context) == 0 {
 		return fmt.Errorf("no build context provided")
 	}
 

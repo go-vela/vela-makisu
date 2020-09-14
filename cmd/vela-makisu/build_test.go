@@ -17,7 +17,7 @@ func TestImg_Build_Command(t *testing.T) {
 	// nolint
 	b := &Build{
 		BuildArgs:   []string{"FOO"},
-		ContextPath: ".",
+		Context:     ".",
 		Commit:      "b0bb040e6a6d71ddf98684349c42d36fa6c539ad",
 		Compression: "default",
 		DenyList:    []string{"FOO"},
@@ -100,8 +100,8 @@ func TestMakisu_Build_Exec_Error(t *testing.T) {
 func TestMakisu_Build_Validate(t *testing.T) {
 	// setup types
 	b := &Build{
-		ContextPath: ".",
-		Tag:         "latest",
+		Context: ".",
+		Tag:     "latest",
 	}
 
 	err := b.Validate()
@@ -110,7 +110,7 @@ func TestMakisu_Build_Validate(t *testing.T) {
 	}
 }
 
-func TestMakisu_Build_Validate_NoContextPath(t *testing.T) {
+func TestMakisu_Build_Validate_NoContext(t *testing.T) {
 	// setup types
 	b := &Build{
 		Tag: "latest",
@@ -125,7 +125,7 @@ func TestMakisu_Build_Validate_NoContextPath(t *testing.T) {
 func TestMakisu_Build_Validate_NoTag(t *testing.T) {
 	// setup types
 	b := &Build{
-		ContextPath: ".",
+		Context: ".",
 	}
 
 	err := b.Validate()
