@@ -26,6 +26,8 @@ const (
 
 // Config holds input parameters for the plugin.
 type Config struct {
+	// enables building images without publishing to the registry
+	DryRun bool
 	// password for communication with the Docker Registry
 	Password string
 	// config path the docker json file exists for authentication
@@ -40,9 +42,16 @@ var (
 
 	// configFlags represents for config settings on the cli.
 	configFlags = []cli.Flag{
+		// nolint
+		&cli.BoolFlag{
+			EnvVars:  []string{"PARAMETER_DRY_RUN", "REGISTRY_DRY_RUN"},
+			FilePath: string("/vela/parameters/makisu/registry/path,/vela/secrets/makisu/registry/path,/vela/secrets/makisu/path"),
+			Name:     "config.dry-run",
+			Usage:    "enables building images without publishing to the registry",
+		},
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_REGISTRY", "REGISTRY_NAME"},
-			FilePath: string("/vela/parameters/img/registry/name,/vela/secrets/docker/registry/name"),
+			FilePath: string("/vela/parameters/makisu/registry/name,/vela/secrets/docker/registry/name"),
 			Name:     "config.registry",
 			Usage:    "Docker registry name to communicate with",
 			Value:    "index.docker.io",
@@ -50,24 +59,16 @@ var (
 		// nolint
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_USERNAME", "REGISTRY_USERNAME", "DOCKER_USERNAME"},
-			FilePath: string("/vela/parameters/img/registry/username,/vela/secrets/img/registry/username,/vela/secrets/img/username"),
+			FilePath: string("/vela/parameters/makisu/registry/username,/vela/secrets/makisu/registry/username,/vela/secrets/makisu/username"),
 			Name:     "config.username",
 			Usage:    "user name for communication with the registry",
 		},
 		// nolint
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_PASSWORD", "REGISTRY_PASSWORD", "DOCKER_PASSWORD"},
-			FilePath: string("/vela/parameters/img/registry/password,/vela/secrets/img/registry/password,/vela/secrets/img/password"),
+			FilePath: string("/vela/parameters/makisu/registry/password,/vela/secrets/makisu/registry/password,/vela/secrets/makisu/password"),
 			Name:     "config.password",
 			Usage:    "password for communication with the registry",
-		},
-		// nolint
-		&cli.StringFlag{
-			EnvVars:  []string{"PARAMETER_PATH", "REGISTRY_PATH", "DOCKER_CONFIG_PATH", "DOCKER_CONFIG"},
-			FilePath: string("/vela/parameters/img/registry/path,/vela/secrets/img/registry/path,/vela/secrets/img/path"),
-			Name:     "config.path",
-			Usage:    "password for communication with the registry",
-			Value:    "~/.docker/config.json",
 		},
 	}
 )

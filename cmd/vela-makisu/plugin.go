@@ -14,6 +14,8 @@ type Plugin struct {
 	Build *Build
 	// config arguments loaded for the plugin
 	Config *Config
+	// push arguments loaded for the plugin
+	Push *Push
 }
 
 // Exec formats and runs the commands for building and publishing a Docker image.
@@ -33,7 +35,20 @@ func (p *Plugin) Exec() error {
 	}
 
 	// execute build action
-	return p.Build.Exec()
+	err = p.Build.Exec()
+	if err != nil {
+		return err
+	}
+
+	// execute push action if not in dry run mode
+	if !p.Config.DryRun {
+		err = p.Push.Exec()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Validate verifies the Plugin is properly configured.
@@ -48,6 +63,12 @@ func (p *Plugin) Validate() error {
 
 	// validate build configuration
 	err = p.Build.Validate()
+	if err != nil {
+		return err
+	}
+
+	// validate push configuration
+	err = p.Push.Validate()
 	if err != nil {
 		return err
 	}

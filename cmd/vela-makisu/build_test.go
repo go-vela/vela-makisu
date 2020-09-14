@@ -14,6 +14,7 @@ import (
 
 func TestImg_Build_Command(t *testing.T) {
 	// setup types
+	// nolint
 	b := &Build{
 		BuildArgs:   []string{"FOO"},
 		ContextPath: ".",

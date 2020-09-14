@@ -54,6 +54,9 @@ func main() {
 	// add build flags
 	app.Flags = append(app.Flags, buildFlags...)
 
+	// add push flags
+	app.Flags = append(app.Flags, pushFlags...)
+
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
@@ -91,6 +94,7 @@ func run(c *cli.Context) error {
 	// create the plugin
 	p := Plugin{
 		Config: &Config{
+			DryRun:   c.Bool("config.dry-run"),
 			Password: c.String("config.password"),
 			URL:      c.String("config.registry"),
 			Username: c.String("config.username"),
