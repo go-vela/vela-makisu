@@ -61,6 +61,13 @@ func (p *Plugin) Validate() error {
 		return err
 	}
 
+	// when user adds configuration additional options
+	// for: docker, http, redis
+	err = p.Build.Unmarshal()
+	if err != nil {
+		return err
+	}
+
 	// validate build configuration
 	err = p.Build.Validate()
 	if err != nil {
