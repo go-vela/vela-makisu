@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func TestImg_Build_Command(t *testing.T) {
+func TestMakisu_Build_Command(t *testing.T) {
 	// setup types
 	// nolint
 	b := &Build{
@@ -91,7 +91,7 @@ func TestMakisu_Build_Exec_Error(t *testing.T) {
 	// setup types
 	b := &Build{}
 
-	err := b.Exec()
+	_, err := b.Exec()
 	if err == nil {
 		t.Errorf("Exec should have returned err")
 	}

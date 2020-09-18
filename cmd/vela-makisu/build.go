@@ -34,7 +34,7 @@ type (
 		Context string
 		// enables setting list of locations to be ignored within docker image
 		DenyList []string
-		// Used for translating the raw docker configuration
+		// used for translating the raw docker configuration
 		Docker *Docker
 		// enables setting configuration on the Docker daemon
 		DockerRaw string
@@ -42,6 +42,8 @@ type (
 		Destination string
 		// enables setting a the absolute path to dockerfile
 		File string
+		// enables setting the global flags
+		GlobalFlags []string
 		// Used for translating the raw http cache configuration
 		HTTPCache *HTTPCache
 		// enables setting custom http options caching
@@ -56,7 +58,7 @@ type (
 		PreserveRoot bool
 		// enables setting registries to push the image to
 		Pushes []string
-		// Used for translating the redis cache configuration
+		// used for translating the redis cache configuration
 		RedisCache *RedisCache
 		// enables setting custom redis server for caching
 		RedisCacheRaw string
@@ -124,7 +126,6 @@ var buildFlags = []cli.Flag{
 		FilePath: string("/vela/parameters/makisu/build/compression,/vela/secrets/makisu/build/compression"),
 		Name:     "build.compression",
 		Usage:    "enables setting compression on the tar file built - options: (no|speed|size|default)",
-		Value:    "default",
 	},
 	&cli.StringFlag{
 		EnvVars:  []string{"PARAMETER_CONTEXT"},
@@ -199,12 +200,6 @@ var buildFlags = []cli.Flag{
 		Name:     "build.redis-cache-options",
 		Usage:    "enables setting custom redis server for caching",
 	},
-	&cli.StringFlag{
-		EnvVars:  []string{"PARAMETER_REGISTRY_CONFIG"},
-		FilePath: string("/vela/parameters/makisu/build/registry_config,/vela/secrets/makisu/build/registry_config"),
-		Name:     "build.registry-config",
-		Usage:    "enables setting registry configuration for authentication",
-	},
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_REPLICAS"},
 		FilePath: string("/vela/parameters/makisu/build/replicas,/vela/secrets/makisu/build/replicas"),
@@ -240,6 +235,9 @@ func (b *Build) Command() *exec.Cmd {
 	// variable to store flags for command
 	var flags []string
 
+	// add any global flags that may have been set
+	flags = append(flags, b.GlobalFlags...)
+
 	// check if BuildArgs is provided
 	if len(b.BuildArgs) > 0 {
 		var args string
@@ -247,19 +245,19 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for BuildArgs from provided build command
-		flags = append(flags, fmt.Sprintf("--build-arg \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--build-arg=\"%s\"", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Commit is provided
 	if len(b.Commit) > 0 {
 		// add flag for Commit from provided build command
-		flags = append(flags, fmt.Sprintf("--commit %s", b.Commit))
+		flags = append(flags, fmt.Sprintf("--commit=%s", b.Commit))
 	}
 
 	// check if Compression is provided
 	if len(b.Compression) > 0 {
 		// add flag for Compression from provided build command
-		flags = append(flags, fmt.Sprintf("--compression %s", b.Compression))
+		flags = append(flags, fmt.Sprintf("--compression=%s", b.Compression))
 	}
 
 	// check if DenyList is provided
@@ -269,7 +267,7 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for DenyList from provided build command
-		flags = append(flags, fmt.Sprintf("--blacklist \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--blacklist=\"%s\"", strings.TrimPrefix(args, " ")))
 	}
 
 	// add flags for Docker configuration
@@ -278,13 +276,13 @@ func (b *Build) Command() *exec.Cmd {
 	// check if Destination is provided
 	if len(b.Destination) > 0 {
 		// add flag for Destination from provided build command
-		flags = append(flags, fmt.Sprintf("--dest %s", b.Destination))
+		flags = append(flags, fmt.Sprintf("--dest=%s", b.Destination))
 	}
 
 	// check if File is provided
 	if len(b.File) > 0 {
 		// add flag for File from provided build command
-		flags = append(flags, fmt.Sprintf("--file %s", b.File))
+		flags = append(flags, fmt.Sprintf("--file=%s", b.File))
 	}
 
 	// add flags for HTTPCache configuration
@@ -299,7 +297,7 @@ func (b *Build) Command() *exec.Cmd {
 	// check if LocalCacheTTL is provided
 	if !isDurationZero(b.LocalCacheTTL) {
 		// add flag for LocalCacheTTL from provided build command
-		flags = append(flags, fmt.Sprintf("--local-cache-ttl %s", b.LocalCacheTTL))
+		flags = append(flags, fmt.Sprintf("--local-cache-ttl=%s", b.LocalCacheTTL))
 	}
 
 	// check if ModifyFS is provided
@@ -321,7 +319,7 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Pushes from provided build command
-		flags = append(flags, fmt.Sprintf("--push \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--push=\"%s\"", strings.TrimPrefix(args, " ")))
 	}
 
 	// add flags for RedisCache configuration
@@ -330,7 +328,7 @@ func (b *Build) Command() *exec.Cmd {
 	// check if RegistryConfig is provided
 	if len(b.RegistryConfig) > 0 {
 		// add flag for RegistryConfig from provided build command
-		flags = append(flags, fmt.Sprintf("--registry-config %s", b.RegistryConfig))
+		flags = append(flags, fmt.Sprintf("--registry-config=%s", b.RegistryConfig))
 	}
 
 	// check if Replicas is provided
@@ -340,25 +338,25 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Replicas from provided build command
-		flags = append(flags, fmt.Sprintf("--replica \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--replica=\"%s\"", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Tag is provided
 	if len(b.Storage) > 0 {
 		// add flag for Tag from provided build command
-		flags = append(flags, fmt.Sprintf("--storage %s", b.Storage))
+		flags = append(flags, fmt.Sprintf("--storage=%s", b.Storage))
 	}
 
 	// check if Tag is provided
 	if len(b.Tag) > 0 {
 		// add flag for Tag from provided build command
-		flags = append(flags, fmt.Sprintf("--tag %s", b.Tag))
+		flags = append(flags, fmt.Sprintf("--tag=%s", b.Tag))
 	}
 
 	// check if Target is provided
 	if len(b.Target) > 0 {
 		// add flag for Target from provided build command
-		flags = append(flags, fmt.Sprintf("--target %s", b.Target))
+		flags = append(flags, fmt.Sprintf("--target=%s", b.Target))
 	}
 
 	// add the required directory param
@@ -367,6 +365,88 @@ func (b *Build) Command() *exec.Cmd {
 	// nolint // this functionality is not exploitable the way
 	// the plugin accepts configuration
 	return exec.Command(_makisu, append([]string{buildAction}, flags...)...)
+}
+
+// Exec formats and runs the commands for building a Docker image.
+func (b *Build) Exec() (string, error) {
+	logrus.Trace("running build with provided configuration")
+
+	// create the build command for the file
+	cmd := b.Command()
+
+	// run the build command for the file
+	err := execCmd(cmd)
+	if err != nil {
+		return "", err
+	}
+
+	return "/foo", nil
+}
+
+// Unmarshal captures the provided properties and
+// serializes them into their expected form.
+func (b *Build) Unmarshal() error {
+	logrus.Trace("unmarshaling build options")
+
+	// allocate configuration to structs
+	b.Docker = &Docker{}
+	b.HTTPCache = &HTTPCache{}
+	b.RedisCache = &RedisCache{}
+
+	// check if any docker options were passed
+	if len(b.DockerRaw) > 0 {
+		// cast raw docker options into bytes
+		dockerOpts := []byte(b.DockerRaw)
+
+		// serialize raw docker options into expected Docker type
+		err := json.Unmarshal(dockerOpts, &b.Docker)
+		if err != nil {
+			return err
+		}
+	}
+
+	// check if any http options were passed
+	if len(b.HTTPCacheRaw) > 0 {
+		// cast raw http options into bytes
+		httpOpts := []byte(b.HTTPCacheRaw)
+
+		// serialize raw http options into expected HTTPCache type
+		err := json.Unmarshal(httpOpts, &b.HTTPCache)
+		if err != nil {
+			return err
+		}
+	}
+
+	// check if any redis options were passed
+	if len(b.RedisCacheRaw) > 0 {
+		// cast raw http options into bytes
+		redisOpts := []byte(b.RedisCacheRaw)
+
+		// serialize raw http options into expected RedisCache type
+		err := json.Unmarshal(redisOpts, &b.RedisCache)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Validate verifies the Build is properly configured.
+func (b *Build) Validate() error {
+	logrus.Trace("validating build plugin configuration")
+
+	// verify tag are provided
+	if len(b.Context) == 0 {
+		return fmt.Errorf("no build context provided")
+	}
+
+	// verify tag are provided
+	if len(b.Tag) == 0 {
+		return fmt.Errorf("no build tag provided")
+	}
+
+	return nil
 }
 
 // Flags formats and outputs the flags for
@@ -446,79 +526,6 @@ func (r *RedisCache) Flags() []string {
 	}
 
 	return flags
-}
-
-// Exec formats and runs the commands for building a Docker image.
-func (b *Build) Exec() error {
-	logrus.Trace("running build with provided configuration")
-
-	// create the build command for the file
-	cmd := b.Command()
-
-	// run the build command for the file
-	err := execCmd(cmd)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Unmarshal captures the provided properties and
-// serializes them into their expected form.
-func (b *Build) Unmarshal() error {
-	logrus.Trace("unmarshaling build options")
-
-	// allocate configuration to structs
-	b.Docker = &Docker{}
-	b.HTTPCache = &HTTPCache{}
-	b.RedisCache = &RedisCache{}
-
-	// cast raw docker options into bytes
-	dockerOpts := []byte(b.DockerRaw)
-
-	// serialize raw docker options into expected Props type
-	err := json.Unmarshal(dockerOpts, &b.Docker)
-	if err != nil {
-		return err
-	}
-
-	// cast raw http options into bytes
-	httpOpts := []byte(b.HTTPCacheRaw)
-
-	// serialize raw http options into expected Props type
-	err = json.Unmarshal(httpOpts, &b.HTTPCache)
-	if err != nil {
-		return err
-	}
-
-	// cast raw http options into bytes
-	redisOpts := []byte(b.RedisCacheRaw)
-
-	// serialize raw http options into expected Props type
-	err = json.Unmarshal(redisOpts, &b.RedisCache)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Validate verifies the Build is properly configured.
-func (b *Build) Validate() error {
-	logrus.Trace("validating build plugin configuration")
-
-	// verify tag are provided
-	if len(b.Context) == 0 {
-		return fmt.Errorf("no build context provided")
-	}
-
-	// verify tag are provided
-	if len(b.Tag) == 0 {
-		return fmt.Errorf("no build tag provided")
-	}
-
-	return nil
 }
 
 // helper function to check if the time in duration

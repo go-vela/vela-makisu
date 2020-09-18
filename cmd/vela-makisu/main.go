@@ -48,11 +48,14 @@ func main() {
 		},
 	}
 
+	// add build flags
+	app.Flags = append(app.Flags, buildFlags...)
+
 	// add config flags
 	app.Flags = append(app.Flags, configFlags...)
 
-	// add build flags
-	app.Flags = append(app.Flags, buildFlags...)
+	// add global flags
+	app.Flags = append(app.Flags, globalFlags...)
 
 	// add push flags
 	app.Flags = append(app.Flags, pushFlags...)
@@ -94,10 +97,11 @@ func run(c *cli.Context) error {
 	// create the plugin
 	p := Plugin{
 		Config: &Config{
-			DryRun:   c.Bool("config.dry-run"),
-			Password: c.String("config.password"),
-			URL:      c.String("config.registry"),
-			Username: c.String("config.username"),
+			DryRun:    c.Bool("config.dry-run"),
+			Password:  c.String("config.password"),
+			URL:       c.String("config.registry"),
+			Username:  c.String("config.username"),
+			GlobalRaw: c.String("config.global-flags"),
 		},
 		Build: &Build{
 			BuildArgs:      c.StringSlice("build.build-args"),

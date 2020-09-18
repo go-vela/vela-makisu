@@ -6,61 +6,25 @@ package main
 
 import (
 	"testing"
+
+	"github.com/spf13/afero"
 )
 
-func TestMakisu_Config_Create(t *testing.T) {
+func TestMakisu_Config_Write(t *testing.T) {
+	// setup filesystem
+	appFS = afero.NewMemMapFs()
+
 	// setup types
 	c := &Config{
+		DryRun:   false,
 		Password: "superSecretPassword",
 		URL:      "index.docker.io",
 		Username: "octocat",
 	}
 
-	_, err := c.Create()
+	err := c.Write()
 	if err != nil {
-		t.Errorf("Create returned err: %v", err)
-	}
-}
-
-func TestMakisu_Config_Create_NoName(t *testing.T) {
-	// setup types
-	c := &Config{
-		Password: "superSecretPassword",
-		URL:      "index.docker.io",
-		Username: "octocat",
-	}
-
-	_, err := c.Create()
-	if err != nil {
-		t.Errorf("Create returned err: %v", err)
-	}
-}
-
-func TestMakisu_Config_Create_NoUsername(t *testing.T) {
-	// setup types
-	c := &Config{
-		Password: "superSecretPassword",
-		URL:      "index.docker.io",
-		Username: "octocat",
-	}
-
-	_, err := c.Create()
-	if err != nil {
-		t.Errorf("Create returned err: %v", err)
-	}
-}
-
-func TestMakisu_Config_Create_NoPassword(t *testing.T) {
-	// setup types
-	c := &Config{
-		Password: "superSecretPassword",
-		URL:      "index.docker.io",
-		Username: "octocat",
-	}
-
-	_, err := c.Create()
-	if err != nil {
-		t.Errorf("Create returned err: %v", err)
+		t.Errorf("Write returned err: %v", err)
 	}
 }
 

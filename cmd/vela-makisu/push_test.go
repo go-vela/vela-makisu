@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestImg_Push_Command(t *testing.T) {
+func TestMakisu_Push_Command(t *testing.T) {
 	// setup types
 	p := &Push{
 		Path:           "/path/to/tar",

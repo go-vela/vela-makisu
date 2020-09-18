@@ -12,15 +12,24 @@ FROM alpine as certs
 
 RUN apk add --update --no-cache ca-certificates
 
+#########################################################################
+##    docker build --no-cache --target certs -t vela-makisu:conf .    ##
+#########################################################################
+
+FROM alpine as conf
+
+RUN mkdir -p /makisu/.docker/ && touch /makisu/.docker/config.json
+
 ##########################################################
 ##    docker build --no-cache -t vela-makisu:local .    ##
 ##########################################################
 
 FROM scratch
 
+COPY --from=makisu /makisu-internal/makisu /bin/makisu
+COPY --from=makisu /makisu-internal/certs/cacerts.pem /makisu-internal/certs/cacerts.pem
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=certs /makisu-internal/makisu /bin/makisu
-
+COPY --from=conf /makisu/.docker/config.json /makisu/.docker/config.json
 
 COPY release/vela-makisu /bin/vela-makisu
 

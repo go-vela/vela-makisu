@@ -22,6 +22,8 @@ type (
 	// https://githup.com/uber/makisu/blob/master/docs/COMMAND.md
 	// nolint
 	Push struct {
+		// enables setting the global flags
+		GlobalFlags []string
 		// enables setting the location of the tar file
 		Path string
 		// enables setting registries to push an image to
@@ -41,7 +43,7 @@ var pushFlags = []cli.Flag{
 	&cli.StringFlag{
 		EnvVars:  []string{"PARAMETER_PATH"},
 		FilePath: string("/vela/parameters/makisu/push/path,/vela/secrets/makisu/push/path"),
-		Name:     "push.context",
+		Name:     "push.path",
 		Usage:    "enables setting the location of the tar file",
 	},
 	&cli.StringSliceFlag{
@@ -50,14 +52,8 @@ var pushFlags = []cli.Flag{
 		Name:     "push.pushes",
 		Usage:    "enables setting registries to push an image to",
 	},
-	&cli.StringFlag{
-		EnvVars:  []string{"PARAMETER_REGISTRY_CONFIG"},
-		FilePath: string("/vela/parameters/makisu/push/registry_config,/vela/secrets/makisu/push/registry_config"),
-		Name:     "push.regstry-config",
-		Usage:    "enables setting the credentials for authentication",
-	},
 	&cli.StringSliceFlag{
-		EnvVars:  []string{"PARAMETER_CONTEXT"},
+		EnvVars:  []string{"PARAMETER_REPLICAS"},
 		FilePath: string("/vela/parameters/makisu/push/context,/vela/secrets/makisu/push/context"),
 		Name:     "push.replicas",
 		Usage:    "enables pushing images with alternative full names",
@@ -79,6 +75,9 @@ func (p *Push) Command() *exec.Cmd {
 	// variable to store flags for command
 	var flags []string
 
+	// add any global flags that may have been set
+	flags = append(flags, p.GlobalFlags...)
+
 	// check if Pushes is provided
 	if len(p.Pushes) > 0 {
 		var args string
@@ -86,13 +85,13 @@ func (p *Push) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Pushes from provided push command
-		flags = append(flags, fmt.Sprintf("--push \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--push=\"%s\"", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if RegistryConfig is provided
 	if len(p.RegistryConfig) > 0 {
 		// add flag for RegistryConfig from provided push command
-		flags = append(flags, fmt.Sprintf("--registry-config %s", p.RegistryConfig))
+		flags = append(flags, fmt.Sprintf("--registry-config=%s", p.RegistryConfig))
 	}
 
 	// check if Replicas is provided
@@ -102,13 +101,13 @@ func (p *Push) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Replicas from provided push command
-		flags = append(flags, fmt.Sprintf("--replica \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--replica=\"%s\"", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Tag is provided
 	if len(p.Tag) > 0 {
 		// add flag for Tag from provided push command
-		flags = append(flags, fmt.Sprintf("--tag %s", p.Tag))
+		flags = append(flags, fmt.Sprintf("--tag=%s", p.Tag))
 	}
 
 	// add the required directory param

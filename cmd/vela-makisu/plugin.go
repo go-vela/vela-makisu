@@ -28,20 +28,41 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
-	// create config configuration
-	_, err = p.Config.Create()
+	// create config configuration for authentication to a registry
+	err = p.Config.Write()
 	if err != nil {
 		return err
 	}
 
+	// get any global flags that may have been set
+	globalFlags := p.Config.Global.Flags()
+
+	// set any configuration for global flags
+	p.Build.GlobalFlags = globalFlags
+	p.Push.GlobalFlags = globalFlags
+
+	// set required configuration for registry config
+	p.Build.RegistryConfig = configPath
+	p.Push.RegistryConfig = configPath
+
 	// execute build action
-	err = p.Build.Exec()
+	path, err := p.Build.Exec()
 	if err != nil {
 		return err
 	}
+
+	// set the location to the built image
+	p.Push.Path = path
 
 	// execute push action if not in dry run mode
 	if !p.Config.DryRun {
+		// validate push configuration
+		err = p.Push.Validate()
+		if err != nil {
+			return err
+		}
+
+		// execute push action
 		err = p.Push.Exec()
 		if err != nil {
 			return err
@@ -55,8 +76,14 @@ func (p *Plugin) Exec() error {
 func (p *Plugin) Validate() error {
 	logrus.Debug("validating plugin configuration")
 
+	// when user adds global flag configuration
+	err := p.Config.Unmarshal()
+	if err != nil {
+		return err
+	}
+
 	// validate config configuration
-	err := p.Config.Validate()
+	err = p.Config.Validate()
 	if err != nil {
 		return err
 	}
@@ -70,12 +97,6 @@ func (p *Plugin) Validate() error {
 
 	// validate build configuration
 	err = p.Build.Validate()
-	if err != nil {
-		return err
-	}
-
-	// validate push configuration
-	err = p.Push.Validate()
 	if err != nil {
 		return err
 	}
