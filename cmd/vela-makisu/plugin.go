@@ -5,6 +5,9 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,6 +15,10 @@ import (
 type Plugin struct {
 	// build arguments loaded for the plugin
 	Build *Build
+	// Used for translating the raw docker configuration
+	Global *Global
+	// enables setting configuration for the global flags
+	GlobalRaw string
 	// registry arguments loaded for the plugin
 	Registry *Registry
 	// push arguments loaded for the plugin
@@ -35,7 +42,7 @@ func (p *Plugin) Exec() error {
 	}
 
 	// get any global flags that may have been set
-	globalFlags := p.Registry.Global.Flags()
+	globalFlags := p.Global.Flags()
 
 	// set any configuration for global flags
 	p.Build.GlobalFlags = globalFlags
@@ -72,18 +79,37 @@ func (p *Plugin) Exec() error {
 	return nil
 }
 
+// Unmarshal captures the provided properties and
+// serializes them into their expected form.
+func (p *Plugin) Unmarshal() error {
+	logrus.Trace("unmarshaling global flags")
+
+	// allocate configuration to structs
+	p.Global = &Global{}
+
+	fmt.Println("GLOBAL: ", p.GlobalRaw)
+
+	// check if any global flags were passed
+	if len(p.GlobalRaw) > 0 {
+		// cast raw global flags into bytes
+		globalFlags := []byte(p.GlobalRaw)
+
+		// serialize raw global flags into expected Global type
+		err := json.Unmarshal(globalFlags, &p.Global)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // Validate verifies the Plugin is properly configured.
 func (p *Plugin) Validate() error {
 	logrus.Debug("validating plugin configuration")
 
-	// when user adds global flag configuration
-	err := p.Registry.Unmarshal()
-	if err != nil {
-		return err
-	}
-
 	// validate config configuration
-	err = p.Registry.Validate()
+	err := p.Registry.Validate()
 	if err != nil {
 		return err
 	}

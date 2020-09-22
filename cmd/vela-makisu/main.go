@@ -96,14 +96,6 @@ func run(c *cli.Context) error {
 
 	// create the plugin
 	p := Plugin{
-		Registry: &Registry{
-			Addr:      c.String("registry.addr"),
-			DryRun:    c.Bool("registry.dry-run"),
-			GlobalRaw: c.String("registry.global-flags"),
-			Mirror:    c.String("registry.mirror"),
-			Password:  c.String("registry.password"),
-			Username:  c.String("registry.username"),
-		},
 		Build: &Build{
 			BuildArgs:      c.StringSlice("build.build-args"),
 			Commit:         c.String("build.commit"),
@@ -126,16 +118,30 @@ func run(c *cli.Context) error {
 			Tag:            c.String("build.tag"),
 			Target:         c.String("build.target"),
 		},
+		GlobalRaw: c.String("global.flags"),
 		Push: &Push{
 			Path:           c.String("push.path"),
 			Pushes:         c.StringSlice("push.pushes"),
 			RegistryConfig: c.String("push.registry-config"),
 			Replicas:       c.StringSlice("push.replicas"),
 		},
+		Registry: &Registry{
+			Addr:     c.String("registry.addr"),
+			DryRun:   c.Bool("registry.dry-run"),
+			Mirror:   c.String("registry.mirror"),
+			Password: c.String("registry.password"),
+			Username: c.String("registry.username"),
+		},
 	}
 
 	// validate the plugin
 	err := p.Validate()
+	if err != nil {
+		return err
+	}
+
+	// unmarshal the plugin
+	err = p.Unmarshal()
 	if err != nil {
 		return err
 	}

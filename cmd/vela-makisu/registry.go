@@ -73,47 +73,19 @@ const (
  }`
 )
 
-type (
-	// Registry represents the input parameters for the plugin.
-	Registry struct {
-		// full url to Docker Registry
-		Addr string
-		// enables building images without publishing to the registry
-		DryRun bool
-		// Used for translating the raw docker configuration
-		Global *Global
-		// enables setting configuration for the global flags
-		GlobalRaw string
-		// full url to a Docker Registry mirror
-		Mirror string
-		// password for communication with the Docker Registry
-		Password string
-		// user name for communication with the Docker Registry
-		Username string
-	}
-
-	// Global represents the global flags that can be set on makisu commands.
-	Global struct {
-		CPU *CPU
-		Log *Log
-	}
-
-	// CPU represents the cpu specific global flags available.
-	CPU struct {
-		// enables viewing the cpu profile of the application
-		Profile bool
-	}
-
-	// Log represents the log specific global flags available.
-	Log struct {
-		// enables setting the format output for the logs - options: (json|console)
-		Fmt string
-		// enables setting the log level for the logs - options: (debug|info|warn|warn)
-		Level string
-		// enables setting the output path for the logs
-		Output string
-	}
-)
+// Registry represents the input parameters for the plugin.
+type Registry struct {
+	// full url to Docker Registry
+	Addr string
+	// enables building images without publishing to the registry
+	DryRun bool
+	// full url to a Docker Registry mirror
+	Mirror string
+	// password for communication with the Docker Registry
+	Password string
+	// user name for communication with the Docker Registry
+	Username string
+}
 
 var (
 	// appFs represents a instance of the filesystem.
@@ -157,26 +129,6 @@ var (
 
 	// configPath represents the location of the Docker config file for setting registries.
 	configPath = "/makisu/registry/config.json"
-
-	// configFlags represents the global flags that can be set on the makisu commands.
-	// nolint
-	globalFlags = []cli.Flag{
-		&cli.StringFlag{
-			EnvVars:  []string{"PARAMETER_GLOBAL_FLAGS"},
-			FilePath: string("/vela/parameters/makisu/config/cpu_profile,/vela/secrets/makisu/config/cpu_profile"),
-			Name:     "registry.global-flags",
-			Usage:    "enables setting the global flags on the CLI",
-			Value:    globalDefaultValue,
-		},
-	}
-
-	// globalDefaultValue represents the default setting for the global config.
-	globalDefaultValue = `{
-		"cpu":{},		
-		"log":{
-			 "fmt":"console"
-		}
- }`
 )
 
 // Write creates a Docker config.json file for building and publishing the image.
@@ -234,29 +186,6 @@ func (r *Registry) Write() error {
 	return a.WriteFile(configPath, registryConf, 0644)
 }
 
-// Unmarshal captures the provided properties and
-// serializes them into their expected form.
-func (r *Registry) Unmarshal() error {
-	logrus.Trace("unmarshaling config global flags")
-
-	// allocate configuration to structs
-	r.Global = &Global{}
-
-	// check if any global flags were passed
-	if len(r.GlobalRaw) > 0 {
-		// cast raw global flags into bytes
-		globalFlags := []byte(r.GlobalRaw)
-
-		// serialize raw global flags into expected Global type
-		err := json.Unmarshal(globalFlags, &r.Global)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // Validate verifies the Config is properly configured.
 func (r *Registry) Validate() error {
 	logrus.Trace("validating config plugin configuration")
@@ -277,41 +206,4 @@ func (r *Registry) Validate() error {
 	}
 
 	return nil
-}
-
-// Flags formats and outputs the flags for
-// configuring a Docker.
-func (g *Global) Flags() []string {
-	logrus.Trace("creating global flags for command")
-
-	fmt.Println("GLOBAL: ", g)
-
-	// variable to store flags for command
-	var flags []string
-
-	// check if cpu profile is provided
-	if g.CPU.Profile {
-		// add flag for cpu profile from provided build command
-		flags = append(flags, "--cpu-profile ")
-	}
-
-	// check if log fmt is provided
-	if len(g.Log.Fmt) > 0 {
-		// add flag for log fmt from provided build command
-		flags = append(flags, fmt.Sprintf("--log-fmt=%s", g.Log.Fmt))
-	}
-
-	// check if log level is provided
-	if len(g.Log.Level) > 0 {
-		// add flag for log level from provided build command
-		flags = append(flags, fmt.Sprintf("--log-level=%s", g.Log.Level))
-	}
-
-	// check if log output is provided
-	if len(g.Log.Output) > 0 {
-		// add flag for log output from provided build command
-		flags = append(flags, fmt.Sprintf("--log-output=%s", g.Log.Output))
-	}
-
-	return flags
 }
