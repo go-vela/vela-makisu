@@ -15,6 +15,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// nolint
 const buildAction = "build"
 
 type (
