@@ -16,9 +16,9 @@ func TestMakisu_Plugin_Exec(t *testing.T) {
 func TestMakisu_Plugin_Validate(t *testing.T) {
 	// setup types
 	p := &Plugin{
-		Config: &Config{
+		Registry: &Registry{
 			Password: "superSecretPassword",
-			URL:      "index.docker.io",
+			Addr:     "index.docker.io",
 			Username: "octocat",
 		},
 		//nolint

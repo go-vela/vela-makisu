@@ -96,12 +96,13 @@ func run(c *cli.Context) error {
 
 	// create the plugin
 	p := Plugin{
-		Config: &Config{
-			DryRun:    c.Bool("config.dry-run"),
-			Password:  c.String("config.password"),
-			URL:       c.String("config.registry"),
-			Username:  c.String("config.username"),
-			GlobalRaw: c.String("config.global-flags"),
+		Registry: &Registry{
+			Addr:      c.String("registry.addr"),
+			DryRun:    c.Bool("registry.dry-run"),
+			GlobalRaw: c.String("registry.global-flags"),
+			Mirror:    c.String("registry.mirror"),
+			Password:  c.String("registry.password"),
+			Username:  c.String("registry.username"),
 		},
 		Build: &Build{
 			BuildArgs:      c.StringSlice("build.build-args"),

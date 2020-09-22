@@ -188,7 +188,8 @@ docker-test:
 	@docker run --rm \
 		-e PARAMETER_LOG_LEVEL=info \
 		-e PARAMETER_DRY_RUN=true \
-		-e REGISTRY_NAME=index.docker.io \
+		-e REGISTRY_ADDR=index.docker.io \
+		-e REGISTRY_MIRROR=company.mirror.docker.io \
 		-e REGISTRY_USERNAME="" \
 		-e REGISTRY_PASSWORD="" \
 		-e PARAMETER_BUILD_ARGS="VELA=CI" \
@@ -226,7 +227,8 @@ docker-run:
 	@docker run --rm \
 		-e PARAMETER_LOG_LEVEL \
 		-e PARAMETER_DRY_RUN \
-		-e REGISTRY_NAME \
+		-e REGISTRY_ADDR \
+		-e REGISTRY_MIRROR \
 		-e REGISTRY_PASSWORD \
 		-e REGISTRY_USERNAME \
 		-e PARAMETER_BUILD_ARGS \

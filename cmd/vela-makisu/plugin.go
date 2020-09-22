@@ -12,8 +12,8 @@ import (
 type Plugin struct {
 	// build arguments loaded for the plugin
 	Build *Build
-	// config arguments loaded for the plugin
-	Config *Config
+	// registry arguments loaded for the plugin
+	Registry *Registry
 	// push arguments loaded for the plugin
 	Push *Push
 }
@@ -29,13 +29,13 @@ func (p *Plugin) Exec() error {
 	}
 
 	// create config configuration for authentication to a registry
-	err = p.Config.Write()
+	err = p.Registry.Write()
 	if err != nil {
 		return err
 	}
 
 	// get any global flags that may have been set
-	globalFlags := p.Config.Global.Flags()
+	globalFlags := p.Registry.Global.Flags()
 
 	// set any configuration for global flags
 	p.Build.GlobalFlags = globalFlags
@@ -55,7 +55,7 @@ func (p *Plugin) Exec() error {
 	p.Push.Path = path
 
 	// execute push action if not in dry run mode
-	if !p.Config.DryRun {
+	if !p.Registry.DryRun {
 		// validate push configuration
 		err = p.Push.Validate()
 		if err != nil {
@@ -77,13 +77,13 @@ func (p *Plugin) Validate() error {
 	logrus.Debug("validating plugin configuration")
 
 	// when user adds global flag configuration
-	err := p.Config.Unmarshal()
+	err := p.Registry.Unmarshal()
 	if err != nil {
 		return err
 	}
 
 	// validate config configuration
-	err = p.Config.Validate()
+	err = p.Registry.Validate()
 	if err != nil {
 		return err
 	}

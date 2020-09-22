@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Target Brands, Inc. All rights reserved.
+// Copyright (c) 2020 Target Brands, Inr. All rights reserved.
 //
 // Use of this source code is governed by the LICENSE file in this repository.
 
@@ -10,72 +10,72 @@ import (
 	"github.com/spf13/afero"
 )
 
-func TestMakisu_Config_Write(t *testing.T) {
+func TestMakisu_Registry_Write(t *testing.T) {
 	// setup filesystem
 	appFS = afero.NewMemMapFs()
 
 	// setup types
-	c := &Config{
+	r := &Registry{
 		DryRun:   false,
 		Password: "superSecretPassword",
-		URL:      "index.docker.io",
+		Addr:     "index.docker.io",
 		Username: "octocat",
 	}
 
-	err := c.Write()
+	err := r.Write()
 	if err != nil {
 		t.Errorf("Write returned err: %v", err)
 	}
 }
 
-func TestMakisu_Config_Validate(t *testing.T) {
+func TestMakisu_Registry_Validate(t *testing.T) {
 	// setup types
-	c := &Config{
+	r := &Registry{
 		Password: "superSecretPassword",
-		URL:      "index.docker.io",
+		Addr:     "index.docker.io",
 		Username: "octocat",
 	}
 
-	err := c.Validate()
+	err := r.Validate()
 	if err != nil {
 		t.Errorf("Validate returned err: %v", err)
 	}
 }
 
-func TestMakisu_Config_Validate_NoPassword(t *testing.T) {
+func TestMakisu_Registry_Validate_NoPassword(t *testing.T) {
 	// setup types
-	c := &Config{
-		URL:      "index.docker.io",
+	r := &Registry{
+		Addr:     "index.docker.io",
 		Username: "octocat",
 	}
 
-	err := c.Validate()
+	err := r.Validate()
 	if err == nil {
 		t.Errorf("Validate should have returned err")
 	}
 }
 
-func TestMakisu_Config_Validate_NoURL(t *testing.T) {
+func TestMakisu_Registry_Validate_NoURL(t *testing.T) {
 	// setup types
-	c := &Config{
+	r := &Registry{
 		Password: "superSecretPassword",
 		Username: "octocat",
 	}
 
-	err := c.Validate()
+	err := r.Validate()
 	if err == nil {
 		t.Errorf("Validate should have returned err")
 	}
 }
 
-func TestMakisu_Config_Validate_NoUsername(t *testing.T) {
+func TestMakisu_Registry_Validate_NoUsername(t *testing.T) {
 	// setup types
-	c := &Config{
+	r := &Registry{
 		Password: "superSecretPassword",
-		URL:      "index.docker.io",
+		Addr:     "index.docker.io",
 	}
 
-	err := c.Validate()
+	err := r.Validate()
 	if err == nil {
 		t.Errorf("Validate should have returned err")
 	}
