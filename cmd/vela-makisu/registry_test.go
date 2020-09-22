@@ -16,9 +16,10 @@ func TestMakisu_Registry_Write(t *testing.T) {
 
 	// setup types
 	r := &Registry{
-		DryRun:   false,
-		Password: "superSecretPassword",
 		Addr:     "index.docker.io",
+		DryRun:   false,
+		Mirror:   "company.mirror.docker.io",
+		Password: "superSecretPassword",
 		Username: "octocat",
 	}
 

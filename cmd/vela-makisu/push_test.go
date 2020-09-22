@@ -26,11 +26,11 @@ func TestMakisu_Push_Command(t *testing.T) {
 	want := exec.Command(
 		_makisu,
 		pushAction,
-		fmt.Sprintf("--push \"%s\"", p.Pushes[0]),
-		fmt.Sprintf("--registry-config %s", p.RegistryConfig),
-		fmt.Sprintf("--replica \"%s\"", p.Replicas[0]),
-		fmt.Sprintf("--tag %s", p.Tag),
-		".",
+		fmt.Sprintf("--push=%s", p.Pushes[0]),
+		fmt.Sprintf("--registry-config=%s", p.RegistryConfig),
+		fmt.Sprintf("--replica=%s", p.Replicas[0]),
+		fmt.Sprintf("--tag=%s", p.Tag),
+		p.Path,
 	)
 
 	got := p.Command()

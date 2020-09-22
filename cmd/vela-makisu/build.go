@@ -102,7 +102,7 @@ type (
 		// enables seting the password of the Redis server, should match 'requirepass' in redis.conf
 		Password string
 		// enables setting the Time-To-Live for redis cache (default 168h0m0s)
-		TTL time.Duration
+		TTL string
 	}
 )
 
@@ -230,7 +230,7 @@ var buildFlags = []cli.Flag{
 // Command formats and outputs the Build command from
 // the provided configuration to build a Docker image.
 // nolint
-func (b *Build) Command() *exec.Cmd {
+func (b *Build) Command() (*exec.Cmd, error) {
 	logrus.Trace("creating makisu build command from plugin configuration")
 
 	// variable to store flags for command
@@ -246,7 +246,7 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for BuildArgs from provided build command
-		flags = append(flags, fmt.Sprintf("--build-arg=\"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--build-arg=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Commit is provided
@@ -268,7 +268,7 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for DenyList from provided build command
-		flags = append(flags, fmt.Sprintf("--blacklist=\"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--blacklist=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// add flags for Docker configuration
@@ -320,11 +320,16 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Pushes from provided build command
-		flags = append(flags, fmt.Sprintf("--push=\"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--push=%s", strings.TrimPrefix(args, " ")))
+	}
+
+	redisFlags, err := b.RedisCache.Flags()
+	if err != nil {
+		return nil, err
 	}
 
 	// add flags for RedisCache configuration
-	flags = append(flags, b.RedisCache.Flags()...)
+	flags = append(flags, redisFlags...)
 
 	// check if RegistryConfig is provided
 	if len(b.RegistryConfig) > 0 {
@@ -339,7 +344,7 @@ func (b *Build) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Replicas from provided build command
-		flags = append(flags, fmt.Sprintf("--replica=\"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--replica=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Tag is provided
@@ -365,7 +370,7 @@ func (b *Build) Command() *exec.Cmd {
 
 	// nolint // this functionality is not exploitable the way
 	// the plugin accepts configuration
-	return exec.Command(_makisu, append([]string{buildAction}, flags...)...)
+	return exec.Command(_makisu, append([]string{buildAction}, flags...)...), nil
 }
 
 // Exec formats and runs the commands for building a Docker image.
@@ -373,10 +378,13 @@ func (b *Build) Exec() (string, error) {
 	logrus.Trace("running build with provided configuration")
 
 	// create the build command for the file
-	cmd := b.Command()
+	cmd, err := b.Command()
+	if err != nil {
+		return "", err
+	}
 
 	// run the build command for the file
-	err := execCmd(cmd)
+	err = execCmd(cmd)
 	if err != nil {
 		return "", err
 	}
@@ -459,19 +467,19 @@ func (d *Docker) Flags() []string {
 	// check if Host is provided
 	if len(d.Host) > 0 {
 		// add flag for Host from provided build command
-		flags = append(flags, fmt.Sprintf("--docker-host %s", d.Host))
+		flags = append(flags, fmt.Sprintf("--docker-host=%s", d.Host))
 	}
 
 	// check if Scheme is provided
 	if len(d.Scheme) > 0 {
 		// add flag for Scheme from provided build command
-		flags = append(flags, fmt.Sprintf("--docker-scheme %s", d.Scheme))
+		flags = append(flags, fmt.Sprintf("--docker-scheme=%s", d.Scheme))
 	}
 
 	// check if Version is provided
 	if len(d.Version) > 0 {
 		// add flag for Version from provided build command
-		flags = append(flags, fmt.Sprintf("--docker-version %s", d.Version))
+		flags = append(flags, fmt.Sprintf("--docker-version=%s", d.Version))
 	}
 
 	return flags
@@ -486,7 +494,7 @@ func (h *HTTPCache) Flags() []string {
 	// check if Addr is provided
 	if len(h.Addr) > 0 {
 		// add flag for Addr from provided build command
-		flags = append(flags, fmt.Sprintf("--http-cache-addr %s", h.Addr))
+		flags = append(flags, fmt.Sprintf("--http-cache-addr=%s", h.Addr))
 	}
 
 	// check if Headers is provided
@@ -496,7 +504,7 @@ func (h *HTTPCache) Flags() []string {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for BuildArgs from provided build command
-		flags = append(flags, fmt.Sprintf("--http-cache-header \"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--http-cache-header=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	return flags
@@ -504,29 +512,37 @@ func (h *HTTPCache) Flags() []string {
 
 // Flags formats and outputs the flags for
 // configuring a redis cache.
-func (r *RedisCache) Flags() []string {
+func (r *RedisCache) Flags() ([]string, error) {
 	// variable to store flags for command
 	var flags []string
 
 	// check if Addr is provided
 	if len(r.Addr) > 0 {
 		// add flag for Addr from provided build command
-		flags = append(flags, fmt.Sprintf("--redis-cache-addr %s", r.Addr))
+		flags = append(flags, fmt.Sprintf("--redis-cache-addr=%s", r.Addr))
 	}
 
 	// check if Password is provided
 	if len(r.Password) > 0 {
 		// add flag for Password from provided build command
-		flags = append(flags, fmt.Sprintf("--redis-cache-password %s", r.Password))
+		flags = append(flags, fmt.Sprintf("--redis-cache-password=%s", r.Password))
 	}
 
 	// check if TTL is provided
-	if !isDurationZero(r.TTL) {
-		// add flag for TTL from provided build command
-		flags = append(flags, fmt.Sprintf("--redis-cache-ttl %s", r.TTL))
+	if len(r.TTL) > 0 {
+		duration, err := time.ParseDuration(r.TTL)
+		if err != nil {
+			return nil, err
+		}
+
+		// check if TTL is valid duration
+		if !isDurationZero(duration) {
+			// add flag for TTL from provided build command
+			flags = append(flags, fmt.Sprintf("--redis-cache-ttl=%s", duration))
+		}
 	}
 
-	return flags
+	return flags, nil
 }
 
 // helper function to check if the time in duration

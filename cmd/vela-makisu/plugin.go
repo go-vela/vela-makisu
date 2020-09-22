@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/sirupsen/logrus"
 )
@@ -87,8 +86,6 @@ func (p *Plugin) Unmarshal() error {
 	// allocate configuration to structs
 	p.Global = &Global{}
 
-	fmt.Println("GLOBAL: ", p.GlobalRaw)
-
 	// check if any global flags were passed
 	if len(p.GlobalRaw) > 0 {
 		// cast raw global flags into bytes
@@ -123,6 +120,12 @@ func (p *Plugin) Validate() error {
 
 	// validate build configuration
 	err = p.Build.Validate()
+	if err != nil {
+		return err
+	}
+
+	// validate push configuration
+	err = p.Push.Validate()
 	if err != nil {
 		return err
 	}

@@ -85,7 +85,7 @@ func (p *Push) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Pushes from provided push command
-		flags = append(flags, fmt.Sprintf("--push=\"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--push=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if RegistryConfig is provided
@@ -101,7 +101,7 @@ func (p *Push) Command() *exec.Cmd {
 			args += fmt.Sprintf(" %s", arg)
 		}
 		// add flag for Replicas from provided push command
-		flags = append(flags, fmt.Sprintf("--replica=\"%s\"", strings.TrimPrefix(args, " ")))
+		flags = append(flags, fmt.Sprintf("--replica=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Tag is provided

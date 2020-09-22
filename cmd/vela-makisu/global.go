@@ -68,7 +68,7 @@ func (g *Global) Flags() []string {
 	// check if cpu profile is provided
 	if g.CPU.Profile {
 		// add flag for cpu profile from provided build command
-		flags = append(flags, "--cpu-profile ")
+		flags = append(flags, "--cpu-profile")
 	}
 
 	// check if log fmt is provided
