@@ -181,6 +181,7 @@ var buildFlags = []cli.Flag{
 		FilePath: string("/vela/parameters/makisu/build/modify_fs,/vela/secrets/makisu/build/modify_fs"),
 		Name:     "build.modify-fs",
 		Usage:    "enables setting makisu to modify files outside its internal storage directories",
+		Value:    true,
 	},
 	&cli.BoolFlag{
 		EnvVars:  []string{"PARAMETER_PERSERVE_ROOT"},
