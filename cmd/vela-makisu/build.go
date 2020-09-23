@@ -142,7 +142,7 @@ var buildFlags = []cli.Flag{
 		Usage:    "enables setting list of locations to be ignored within docker image",
 	},
 	&cli.StringFlag{
-		EnvVars:  []string{"PARAMETER_DOCKER_OPTIONS"},
+		EnvVars:  []string{"PARAMETER_DOCKER", "DOCKER"},
 		FilePath: string("/vela/parameters/makisu/build/docker_options,/vela/secrets/makisu/build/docker_options"),
 		Name:     "build.docker-options",
 		Usage:    "enables setting configuration on the docker daemon",
@@ -160,7 +160,7 @@ var buildFlags = []cli.Flag{
 		Usage:    "enables setting a the absolute path to dockerfile",
 	},
 	&cli.StringFlag{
-		EnvVars:  []string{"PARAMETER_HTTP_CACHE_OPTIONS"},
+		EnvVars:  []string{"PARAMETER_HTTP_CACHE", "HTTP_CACHE"},
 		FilePath: string("/vela/parameters/makisu/build/http_cache_options,/vela/secrets/makisu/build/http_cache_options"),
 		Name:     "build.http-cache-options",
 		Usage:    "enables setting custom http options caching",
@@ -197,7 +197,7 @@ var buildFlags = []cli.Flag{
 		Usage:    "enables setting registries to push the image to",
 	},
 	&cli.StringFlag{
-		EnvVars:  []string{"PARAMETER_REDIS_CACHE_OPTIONS"},
+		EnvVars:  []string{"PARAMETER_REDIS_CACHE", "REDIS_CACHE"},
 		FilePath: string("/vela/parameters/makisu/build/redis_cache_options,/vela/secrets/makisu/build/redis_cache_options"),
 		Name:     "build.redis-cache-options",
 		Usage:    "enables setting custom redis server for caching",
