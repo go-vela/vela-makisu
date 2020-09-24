@@ -75,12 +75,10 @@ const (
 
 // Registry represents the input parameters for the plugin.
 type Registry struct {
-	// full url to Docker Registry
-	Addr string
-	// enables building images without publishing to the registry
-	DryRun bool
 	// full url to a Docker Registry mirror
 	Mirror string
+	// full url to Docker Registry
+	Name string
 	// password for communication with the Docker Registry
 	Password string
 	// user name for communication with the Docker Registry
@@ -100,12 +98,6 @@ var (
 			Name:     "registry.name",
 			Usage:    "Docker registry address to communicate with",
 			Value:    "index.docker.io",
-		},
-		&cli.BoolFlag{
-			EnvVars:  []string{"PARAMETER_DRY_RUN", "REGISTRY_DRY_RUN"},
-			FilePath: string("/vela/parameters/makisu/registry/dry_run,/vela/secrets/makisu/registry/path,/vela/secrets/makisu/dry_run"),
-			Name:     "registry.dry-run",
-			Usage:    "enables building images without publishing to the registry",
 		},
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_MIRROR", "REGISTRY_MIRROR"},
@@ -162,7 +154,7 @@ func (r *Registry) Write() error {
 	// create output string for config.json file
 	registry := fmt.Sprintf(
 		registryConf,
-		r.Addr,
+		r.Name,
 		r.Username,
 		r.Password,
 	)
@@ -196,7 +188,7 @@ func (r *Registry) Validate() error {
 	}
 
 	// verify url is provided
-	if len(r.Addr) == 0 {
+	if len(r.Name) == 0 {
 		return fmt.Errorf("no config address provided")
 	}
 

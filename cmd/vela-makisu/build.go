@@ -129,11 +129,10 @@ var buildFlags = []cli.Flag{
 		Usage:    "enables setting compression on the tar file built - options: (no|speed|size|default)",
 	},
 	&cli.StringFlag{
-		EnvVars:  []string{"PARAMETER_CONTEXT"},
+		EnvVars:  []string{"PARAMETER_CONTEXT", "BUILD_WORKSPACE"},
 		FilePath: string("/vela/parameters/makisu/build/context,/vela/secrets/makisu/build/context"),
 		Name:     "build.context",
 		Usage:    "enables setting the context for the image to be built",
-		Value:    ".",
 	},
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_DENY_LIST"},
@@ -189,6 +188,7 @@ var buildFlags = []cli.Flag{
 		FilePath: string("/vela/parameters/makisu/build/perserve_root,/vela/secrets/makisu/build/perserve_root"),
 		Name:     "build.perserve-root",
 		Usage:    "enables setting copying storage from root in the storage during and after build",
+		Value:    true,
 	},
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_PUSHES"},
@@ -375,22 +375,22 @@ func (b *Build) Command() (*exec.Cmd, error) {
 }
 
 // Exec formats and runs the commands for building a Docker image.
-func (b *Build) Exec() (string, error) {
+func (b *Build) Exec() error {
 	logrus.Trace("running build with provided configuration")
 
 	// create the build command for the file
 	cmd, err := b.Command()
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	// run the build command for the file
 	err = execCmd(cmd)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return "/foo", nil
+	return nil
 }
 
 // Unmarshal captures the provided properties and
@@ -454,6 +454,11 @@ func (b *Build) Validate() error {
 	// verify tag are provided
 	if len(b.Tag) == 0 {
 		return fmt.Errorf("no build tag provided")
+	}
+
+	// verify tag are provided
+	if len(b.Pushes) == 0 {
+		logrus.Warn("dry run mode is enabled")
 	}
 
 	return nil

@@ -95,7 +95,7 @@ func TestMakisu_Build_Exec_Error(t *testing.T) {
 		RedisCache: &RedisCache{},
 	}
 
-	_, err := b.Exec()
+	err := b.Exec()
 	if err == nil {
 		t.Errorf("Exec should have returned err")
 	}

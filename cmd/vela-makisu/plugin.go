@@ -20,8 +20,6 @@ type Plugin struct {
 	GlobalRaw string
 	// registry arguments loaded for the plugin
 	Registry *Registry
-	// push arguments loaded for the plugin
-	Push *Push
 }
 
 // Exec formats and runs the commands for building and publishing a Docker image.
@@ -45,37 +43,12 @@ func (p *Plugin) Exec() error {
 
 	// set any configuration for global flags
 	p.Build.GlobalFlags = globalFlags
-	p.Push.GlobalFlags = globalFlags
 
 	// set required configuration for registry config
 	p.Build.RegistryConfig = configPath
-	p.Push.RegistryConfig = configPath
 
 	// execute build action
-	path, err := p.Build.Exec()
-	if err != nil {
-		return err
-	}
-
-	// set the location to the built image
-	p.Push.Path = path
-
-	// execute push action if not in dry run mode
-	if !p.Registry.DryRun {
-		// validate push configuration
-		err = p.Push.Validate()
-		if err != nil {
-			return err
-		}
-
-		// execute push action
-		err = p.Push.Exec()
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return p.Build.Exec()
 }
 
 // Unmarshal captures the provided properties and
@@ -120,12 +93,6 @@ func (p *Plugin) Validate() error {
 
 	// validate build configuration
 	err = p.Build.Validate()
-	if err != nil {
-		return err
-	}
-
-	// validate push configuration
-	err = p.Push.Validate()
 	if err != nil {
 		return err
 	}

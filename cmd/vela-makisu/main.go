@@ -57,9 +57,6 @@ func main() {
 	// add global flags
 	app.Flags = append(app.Flags, globalFlags...)
 
-	// add push flags
-	app.Flags = append(app.Flags, pushFlags...)
-
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
@@ -119,16 +116,9 @@ func run(c *cli.Context) error {
 			Target:         c.String("build.target"),
 		},
 		GlobalRaw: c.String("global.flags"),
-		Push: &Push{
-			Path:           c.String("push.path"),
-			Pushes:         c.StringSlice("push.pushes"),
-			RegistryConfig: c.String("push.registry-config"),
-			Replicas:       c.StringSlice("push.replicas"),
-		},
 		Registry: &Registry{
-			Addr:     c.String("registry.name"),
-			DryRun:   c.Bool("registry.dry-run"),
 			Mirror:   c.String("registry.mirror"),
+			Name:     c.String("registry.name"),
 			Password: c.String("registry.password"),
 			Username: c.String("registry.username"),
 		},

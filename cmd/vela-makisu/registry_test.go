@@ -16,9 +16,8 @@ func TestMakisu_Registry_Write(t *testing.T) {
 
 	// setup types
 	r := &Registry{
-		Addr:     "index.docker.io",
-		DryRun:   false,
 		Mirror:   "company.mirror.docker.io",
+		Name:     "index.docker.io",
 		Password: "superSecretPassword",
 		Username: "octocat",
 	}
@@ -32,8 +31,8 @@ func TestMakisu_Registry_Write(t *testing.T) {
 func TestMakisu_Registry_Validate(t *testing.T) {
 	// setup types
 	r := &Registry{
+		Name:     "index.docker.io",
 		Password: "superSecretPassword",
-		Addr:     "index.docker.io",
 		Username: "octocat",
 	}
 
@@ -46,7 +45,7 @@ func TestMakisu_Registry_Validate(t *testing.T) {
 func TestMakisu_Registry_Validate_NoPassword(t *testing.T) {
 	// setup types
 	r := &Registry{
-		Addr:     "index.docker.io",
+		Name:     "index.docker.io",
 		Username: "octocat",
 	}
 
@@ -73,7 +72,7 @@ func TestMakisu_Registry_Validate_NoUsername(t *testing.T) {
 	// setup types
 	r := &Registry{
 		Password: "superSecretPassword",
-		Addr:     "index.docker.io",
+		Name:     "index.docker.io",
 	}
 
 	err := r.Validate()

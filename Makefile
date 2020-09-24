@@ -227,6 +227,7 @@ docker-run:
 	@echo "### Executing vela-makisu:local image"
 	@docker run --rm \
 		-e PARAMETER_LOG_LEVEL \
+		-e BUILD_WORKSPACE \
 		-e PARAMETER_DRY_RUN \
 		-e REGISTRY_NAME \
 		-e REGISTRY_MIRROR \
