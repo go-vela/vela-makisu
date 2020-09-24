@@ -126,7 +126,7 @@ func run(c *cli.Context) error {
 			Replicas:       c.StringSlice("push.replicas"),
 		},
 		Registry: &Registry{
-			Addr:     c.String("registry.addr"),
+			Addr:     c.String("registry.name"),
 			DryRun:   c.Bool("registry.dry-run"),
 			Mirror:   c.String("registry.mirror"),
 			Password: c.String("registry.password"),

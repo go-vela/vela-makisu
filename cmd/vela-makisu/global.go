@@ -41,7 +41,7 @@ var (
 	globalFlags = []cli.Flag{
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_GLOBAL_FLAGS"},
-			FilePath: string("/vela/parameters/makisu/config/cpu_profile,/vela/secrets/makisu/config/cpu_profile"),
+			FilePath: string("/vela/parameters/makisu/global/flags,/vela/secrets/makisu/global/flags"),
 			Name:     "global.flags",
 			Usage:    "enables setting the global flags on the CLI",
 			Value:    globalDefaultValue,

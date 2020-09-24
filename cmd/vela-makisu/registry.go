@@ -95,15 +95,15 @@ var (
 	// nolint
 	configFlags = []cli.Flag{
 		&cli.StringFlag{
-			EnvVars:  []string{"PARAMETER_REGISTRY", "REGISTRY_ADDR"},
+			EnvVars:  []string{"PARAMETER_REGISTRY", "REGISTRY_NAME"},
 			FilePath: string("/vela/parameters/makisu/registry/name,/vela/secrets/docker/registry/name"),
-			Name:     "registry.addr",
+			Name:     "registry.name",
 			Usage:    "Docker registry address to communicate with",
 			Value:    "index.docker.io",
 		},
 		&cli.BoolFlag{
 			EnvVars:  []string{"PARAMETER_DRY_RUN", "REGISTRY_DRY_RUN"},
-			FilePath: string("/vela/parameters/makisu/registry/path,/vela/secrets/makisu/registry/path,/vela/secrets/makisu/path"),
+			FilePath: string("/vela/parameters/makisu/registry/dry_run,/vela/secrets/makisu/registry/path,/vela/secrets/makisu/dry_run"),
 			Name:     "registry.dry-run",
 			Usage:    "enables building images without publishing to the registry",
 		},

@@ -48,19 +48,19 @@ var pushFlags = []cli.Flag{
 	},
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_PUSHES"},
-		FilePath: string("/vela/parameters/makisu/push/context,/vela/secrets/makisu/push/context"),
+		FilePath: string("/vela/parameters/makisu/push/pushes,/vela/secrets/makisu/push/pushes"),
 		Name:     "push.pushes",
 		Usage:    "enables setting registries to push an image to",
 	},
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_REPLICAS"},
-		FilePath: string("/vela/parameters/makisu/push/context,/vela/secrets/makisu/push/context"),
+		FilePath: string("/vela/parameters/makisu/push/replicas,/vela/secrets/makisu/push/replicas"),
 		Name:     "push.replicas",
 		Usage:    "enables pushing images with alternative full names",
 	},
 	&cli.StringFlag{
 		EnvVars:  []string{"PARAMETER_TAG"},
-		FilePath: string("/vela/parameters/makisu/push/registry_config,/vela/secrets/makisu/push/registry_config"),
+		FilePath: string("/vela/parameters/makisu/push/tag,/vela/secrets/makisu/push/tag"),
 		Name:     "push.tag",
 		Usage:    "enables setting the tag for an image",
 	},
