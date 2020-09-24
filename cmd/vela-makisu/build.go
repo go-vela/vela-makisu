@@ -297,7 +297,7 @@ func (b *Build) Command() (*exec.Cmd, error) {
 	}
 
 	// check if LocalCacheTTL is provided
-	if len(b.LocalCacheTTL.String()) != 0 {
+	if b.LocalCacheTTL > 0 {
 		// add flag for LocalCacheTTL from provided build command
 		flags = append(flags, fmt.Sprintf("--local-cache-ttl=%s", b.LocalCacheTTL))
 	}
@@ -537,7 +537,7 @@ func (r *RedisCache) Flags() ([]string, error) {
 		}
 
 		// check if TTL is valid duration
-		if len(duration.String()) != 0 {
+		if duration > 0 {
 			// add flag for TTL from provided build command
 			flags = append(flags, fmt.Sprintf("--redis-cache-ttl=%s", duration))
 		}
