@@ -297,7 +297,7 @@ func (b *Build) Command() (*exec.Cmd, error) {
 	}
 
 	// check if LocalCacheTTL is provided
-	if !isDurationZero(b.LocalCacheTTL) {
+	if len(b.LocalCacheTTL.String()) != 0 {
 		// add flag for LocalCacheTTL from provided build command
 		flags = append(flags, fmt.Sprintf("--local-cache-ttl=%s", b.LocalCacheTTL))
 	}
@@ -537,28 +537,11 @@ func (r *RedisCache) Flags() ([]string, error) {
 		}
 
 		// check if TTL is valid duration
-		if !isDurationZero(duration) {
+		if len(duration.String()) != 0 {
 			// add flag for TTL from provided build command
 			flags = append(flags, fmt.Sprintf("--redis-cache-ttl=%s", duration))
 		}
 	}
 
 	return flags, nil
-}
-
-// helper function to check if the time in duration
-// is the zero value.
-func isDurationZero(t time.Duration) bool {
-	zero, err := time.ParseDuration("0")
-	if err != nil {
-		logrus.Error(err)
-		return false
-	}
-
-	// if the duration is zero return true
-	if strings.EqualFold(t.String(), zero.String()) {
-		return true
-	}
-
-	return false
 }
