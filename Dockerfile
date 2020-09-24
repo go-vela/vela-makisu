@@ -24,7 +24,7 @@ RUN mkdir -p /makisu/registry/ && touch /makisu/registry/config.json
 ##    docker build --no-cache -t vela-makisu:local .    ##
 ##########################################################
 
-FROM alpine
+FROM scratch
 
 COPY --from=makisu /makisu-internal/makisu /bin/makisu
 COPY --from=makisu /makisu-internal/certs/cacerts.pem /makisu-internal/certs/cacerts.pem
