@@ -178,23 +178,23 @@ func (r *Registry) Write() error {
 	return a.WriteFile(configPath, registryConf, 0644)
 }
 
-// Validate verifies the Config is properly configured.
+// Validate verifies the registry is properly configured.
 func (r *Registry) Validate() error {
-	logrus.Trace("validating config plugin configuration")
+	logrus.Trace("validating registry plugin configuration")
 
 	// verify password are provided
 	if len(r.Password) == 0 {
-		return fmt.Errorf("no config password provided")
+		return fmt.Errorf("no registry password provided")
 	}
 
 	// verify url is provided
 	if len(r.Name) == 0 {
-		return fmt.Errorf("no config address provided")
+		return fmt.Errorf("no registry address provided")
 	}
 
 	// verify username is provided
 	if len(r.Username) == 0 {
-		return fmt.Errorf("no config username provided")
+		return fmt.Errorf("no registry username provided")
 	}
 
 	return nil
