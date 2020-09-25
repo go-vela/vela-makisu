@@ -22,6 +22,7 @@ steps:
     parameters:
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world
+      pushes: [ index.docker.io ]
 ```
 
 Sample of building an image without publishing:
@@ -31,7 +32,7 @@ steps:
   - name: publish hello world
     image: target/vela-makisu:latest
     parameters:
-+     dry_run: true
+-     pushes: [ index.docker.io ]
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world:latest
 ```
@@ -45,6 +46,7 @@ steps:
     parameters:
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world:latest
+      pushes: [ index.docker.io ]
 +     replicas:
 +       - index.docker.io/octocat/hello-world:1
 +       - index.docker.io/octocat/hello-world:foobar
@@ -62,6 +64,7 @@ steps:
 +       - FOO=bar
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world
+      pushes: [ index.docker.io ]
 ```
 
 Sample of building and publishing an image with redis caching:
@@ -78,6 +81,7 @@ steps:
 +       ttl: 7d
       registry: index.docker.io
       repo: index.docker.io/octocat/hello-world
+      pushes: [ index.docker.io ]
 ```
 
 ## Secrets
@@ -95,6 +99,7 @@ steps:
     parameters:
       registry: index.docker.io
       repo: index.docker.io/octocat/hello-world
+      pushes: [ index.docker.io ]
 -     redis_cache: 
 -       addr: redis.company.com
 -       password: superSecretPassword
