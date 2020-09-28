@@ -58,7 +58,6 @@ Sample of building and publishing an image with build arguments:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
-    pull: true
     parameters:
 +     build_args:
 +       - FOO=bar
@@ -73,7 +72,6 @@ Sample of building and publishing an image with redis caching:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
-    pull: true
     parameters:
 +     redis_cache_options: 
 +       addr: redis.company.com
@@ -94,7 +92,6 @@ You can use Vela secrets to substitute sensitive values at runtime:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
-    pull: true
 +   secrets: [ docker_username, docker_password, redis_cache ]
     parameters:
       registry: index.docker.io
