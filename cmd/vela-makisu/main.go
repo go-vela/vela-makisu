@@ -48,6 +48,15 @@ func main() {
 		},
 	}
 
+	// add build flags
+	app.Flags = append(app.Flags, buildFlags...)
+
+	// add config flags
+	app.Flags = append(app.Flags, configFlags...)
+
+	// add global flags
+	app.Flags = append(app.Flags, globalFlags...)
+
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
@@ -83,10 +92,46 @@ func run(c *cli.Context) error {
 	}).Info("Vela Makisu Plugin")
 
 	// create the plugin
-	p := Plugin{}
+	p := Plugin{
+		Build: &Build{
+			BuildArgs:      c.StringSlice("build.build-args"),
+			Commit:         c.String("build.commit"),
+			Compression:    c.String("build.compression"),
+			Context:        c.String("build.context"),
+			DenyList:       c.StringSlice("build.deny-list"),
+			DockerRaw:      c.String("build.docker-options"),
+			Destination:    c.String("build.destination"),
+			File:           c.String("build.file"),
+			HTTPCacheRaw:   c.String("build.http-cache-options"),
+			Load:           c.Bool("build.load"),
+			LocalCacheTTL:  c.Duration("build.local-cache-ttl"),
+			ModifyFS:       c.Bool("build.modify-fs"),
+			PreserveRoot:   c.Bool("build.perserve-root"),
+			Pushes:         c.StringSlice("build.pushes"),
+			RedisCacheRaw:  c.String("build.redis-cache-options"),
+			RegistryConfig: c.String("build.registry-config"),
+			Replicas:       c.StringSlice("build.replicas"),
+			Storage:        c.String("build.storage"),
+			Tag:            c.String("build.tag"),
+			Target:         c.String("build.target"),
+		},
+		GlobalRaw: c.String("global.flags"),
+		Registry: &Registry{
+			Mirror:   c.String("registry.mirror"),
+			Name:     c.String("registry.name"),
+			Password: c.String("registry.password"),
+			Username: c.String("registry.username"),
+		},
+	}
 
 	// validate the plugin
 	err := p.Validate()
+	if err != nil {
+		return err
+	}
+
+	// unmarshal the plugin
+	err = p.Unmarshal()
 	if err != nil {
 		return err
 	}

@@ -186,14 +186,34 @@ docker-test:
 	@echo
 	@echo "### Testing vela-makisu:local image"
 	@docker run --rm \
-		-e BUILD_COMMIT=123abcdefg \
-		-e BUILD_EVENT=push \
-		-e PARAMETER_CONTEXT=/workspace/ \
-		-e PARAMETER_DOCKERFILE=Dockerfile.example \
+		-e PARAMETER_LOG_LEVEL=info \
 		-e PARAMETER_DRY_RUN=true \
-		-e PARAMETER_REGISTRY=index.docker.io \
-		-e PARAMETER_REPO=index.docker.io/target/vela-makisu \
-		-e PARAMETER_TAGS=latest \
+		-e REGISTRY_NAME=index.docker.io \
+		-e REGISTRY_MIRROR=company.mirror.docker.io \
+		-e REGISTRY_USERNAME="" \
+		-e REGISTRY_PASSWORD="" \
+		-e PARAMETER_BUILD_ARGS="VELA=CI" \
+		-e PARAMETER_COMMIT=b0bb040e6a6d71ddf98684349c42d36fa6c539ad \
+		-e PARAMETER_COMPRESSION=default \
+		-e PARAMETER_CONTEXT="." \
+		-e PARAMETER_DENY_LIST="" \
+		-e PARAMETER_DOCKER_OPTIONS="" \
+		-e PARAMETER_DESTINATION="" \
+		-e PARAMETER_FILE="Dockerfile \
+		-e PARAMETER_GLOBAL_FLAGS="{}" \
+		-e PARAMETER_HTTP_CACHE_OPTIONS="" \
+		-e PARAMETER_LOAD=false \
+		-e PARAMETER_LOCAL_CACHE_TTL="" \
+		-e PARAMETER_MODIFY_FS="" \
+		-e PARAMETER_PERSERVE_ROOT="" \
+		-e PARAMETER_PUSHES="" \
+		-e PARAMETER_REDIS_CACHE_OPTIONS="" \
+		-e PARAMETER_REGISTRY_CONFIG="" \
+		-e PARAMETER_REPLICAS="" \
+		-e PARAMETER_STORAGE="" \
+		-e PARAMETER_TAG="latest" \
+		-e PARAMETER_TARGET="" \
+		-e PARAMETER_PATH="" \
 		-v $(shell pwd):/workspace \
 		vela-makisu:local
 
@@ -206,20 +226,34 @@ docker-run:
 	@echo
 	@echo "### Executing vela-makisu:local image"
 	@docker run --rm \
-		-e BUILD_COMMIT \
-		-e BUILD_EVENT \
-		-e BUILD_TAG \
-		-e DOCKER_USERNAME \
-		-e DOCKER_PASSWORD \
-		-e PARAMETER_AUTO_TAG \
-		-e PARAMETER_BUILD_ARGS \
-		-e PARAMETER_CACHE \
-		-e PARAMETER_CACHE_REPO \
-		-e PARAMETER_CONTEXT \
-		-e PARAMETER_DOCKERFILE \
+		-e PARAMETER_LOG_LEVEL \
+		-e BUILD_WORKSPACE \
 		-e PARAMETER_DRY_RUN \
-		-e PARAMETER_REGISTRY \
-		-e PARAMETER_REPO \
-		-e PARAMETER_TAGS \
-		-v $(shell pwd):/workspace \
+		-e REGISTRY_NAME \
+		-e REGISTRY_MIRROR \
+		-e REGISTRY_PASSWORD \
+		-e REGISTRY_USERNAME \
+		-e PARAMETER_BUILD_ARGS \
+		-e PARAMETER_COMMIT \
+		-e PARAMETER_COMPRESSION \
+		-e PARAMETER_CONTEXT \
+		-e PARAMETER_DENY_LIST \
+		-e PARAMETER_DOCKER_OPTIONS \
+		-e PARAMETER_DESTINATION \
+		-e PARAMETER_FILE \
+		-e PARAMETER_GLOBAL_FLAGS \
+		-e PARAMETER_HTTP_CACHE_OPTIONS \
+		-e PARAMETER_LOAD \
+		-e PARAMETER_LOCAL_CACHE_TTL \
+		-e PARAMETER_MODIFY_FS \
+		-e PARAMETER_PERSERVE_ROOT \
+		-e PARAMETER_PUSHES \
+		-e PARAMETER_REDIS_CACHE_OPTIONS \
+		-e PARAMETER_REGISTRY_CONFIG \
+		-e PARAMETER_REPLICAS \
+		-e PARAMETER_STORAGE \
+		-e PARAMETER_TAG \
+		-e PARAMETER_TARGET \
+		-e PARAMETER_PATH \
+		-v $(shell pwd):/vela/src/github.com/go-vela/vela-makisu \
 		vela-makisu:local
