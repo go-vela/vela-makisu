@@ -19,6 +19,7 @@ Sample of building and publishing an image:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world
@@ -31,6 +32,7 @@ Sample of building an image without publishing:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
 -     pushes: [ index.docker.io ]
       registry: index.docker.io
@@ -43,6 +45,7 @@ Sample of building and publishing an image with custom tags:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world:latest
@@ -58,6 +61,7 @@ Sample of building and publishing an image with build arguments:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
 +     build_args:
 +       - FOO=bar
@@ -72,6 +76,7 @@ Sample of building and publishing an image with redis caching:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
 +     redis_cache_options: 
 +       addr: redis.company.com
@@ -92,6 +97,7 @@ You can use Vela secrets to substitute sensitive values at runtime:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
+    pull: always
 +   secrets: [ docker_username, docker_password, redis_cache ]
     parameters:
       registry: index.docker.io
