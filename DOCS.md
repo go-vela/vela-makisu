@@ -8,10 +8,7 @@ Registry: https://hub.docker.com/r/target/vela-makisu
 
 ## Usage
 
-_Notes:_
-
-* The plugin supports reading all parameters via environment variables or files. Values set as a file take precedence over default values set from the environment.
-* We do not recommended using latest for pipelines. Users should use pinned images to decrease volatility of external changes to their pipelines. 
+**NOTE: It is not recommended to use `latest` as the tag for the Docker image. Users should use a semantically versioned tag instead.**
 
 Sample of building and publishing an image:
 
@@ -19,6 +16,7 @@ Sample of building and publishing an image:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world
@@ -31,6 +29,7 @@ Sample of building an image without publishing:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
 -     pushes: [ index.docker.io ]
       registry: index.docker.io
@@ -43,6 +42,7 @@ Sample of building and publishing an image with custom tags:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
       registry: index.docker.io
       tag: index.docker.io/octocat/hello-world:latest
@@ -58,6 +58,7 @@ Sample of building and publishing an image with build arguments:
 steps:
   - name: publish hello world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
 +     build_args:
 +       - FOO=bar
@@ -72,6 +73,7 @@ Sample of building and publishing an image with redis caching:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
+    pull: always
     parameters:
 +     redis_cache_options: 
 +       addr: redis.company.com
@@ -92,6 +94,7 @@ You can use Vela secrets to substitute sensitive values at runtime:
 steps:
   - name: publish_hello-world
     image: target/vela-makisu:latest
+    pull: always
 +   secrets: [ docker_username, docker_password, redis_cache ]
     parameters:
       registry: index.docker.io
@@ -107,7 +110,10 @@ steps:
 
 ## Parameters
 
-**NOTE: Vela injects several variables, by default, that this plugin can load in automatically.**
+**NOTE:**
+
+* the plugin supports reading all parameters via environment variables or files
+* values set from a file take precedence over values set from the environment
 
 The following parameters are used to configure the build and push process:
 
