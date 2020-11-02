@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
-	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -242,34 +241,30 @@ func (b *Build) Command() (*exec.Cmd, error) {
 
 	// check if BuildArgs is provided
 	if len(b.BuildArgs) > 0 {
-		var args string
 		for _, arg := range b.BuildArgs {
-			args += fmt.Sprintf(" %s", arg)
+			// add flag for BuildArgs from provided build command
+			flags = append(flags, "--build-arg", arg)
 		}
-		// add flag for BuildArgs from provided build command
-		flags = append(flags, fmt.Sprintf("--build-arg=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Commit is provided
 	if len(b.Commit) > 0 {
 		// add flag for Commit from provided build command
-		flags = append(flags, fmt.Sprintf("--commit=%s", b.Commit))
+		flags = append(flags, "--commit", b.Commit)
 	}
 
 	// check if Compression is provided
 	if len(b.Compression) > 0 {
 		// add flag for Compression from provided build command
-		flags = append(flags, fmt.Sprintf("--compression=%s", b.Compression))
+		flags = append(flags, "--compression", b.Compression)
 	}
 
 	// check if DenyList is provided
 	if len(b.DenyList) > 0 {
-		var args string
-		for _, arg := range b.DenyList {
-			args += fmt.Sprintf(" %s", arg)
+		for _, d := range b.DenyList {
+			// add flag for DenyList from provided build command
+			flags = append(flags, "--blacklist", d)
 		}
-		// add flag for DenyList from provided build command
-		flags = append(flags, fmt.Sprintf("--blacklist=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// add flags for Docker configuration
@@ -278,13 +273,13 @@ func (b *Build) Command() (*exec.Cmd, error) {
 	// check if Destination is provided
 	if len(b.Destination) > 0 {
 		// add flag for Destination from provided build command
-		flags = append(flags, fmt.Sprintf("--dest=%s", b.Destination))
+		flags = append(flags, "--dest", b.Destination)
 	}
 
 	// check if File is provided
 	if len(b.File) > 0 {
 		// add flag for File from provided build command
-		flags = append(flags, fmt.Sprintf("--file=%s", b.File))
+		flags = append(flags, "--file", b.File)
 	}
 
 	// add flags for HTTPCache configuration
@@ -299,7 +294,7 @@ func (b *Build) Command() (*exec.Cmd, error) {
 	// check if LocalCacheTTL is provided
 	if b.LocalCacheTTL > 0 {
 		// add flag for LocalCacheTTL from provided build command
-		flags = append(flags, fmt.Sprintf("--local-cache-ttl=%s", b.LocalCacheTTL))
+		flags = append(flags, "--local-cache-ttl", b.LocalCacheTTL.String())
 	}
 
 	// check if ModifyFS is provided
@@ -316,12 +311,10 @@ func (b *Build) Command() (*exec.Cmd, error) {
 
 	// check if Pushes is provided
 	if len(b.Pushes) > 0 {
-		var args string
-		for _, arg := range b.Pushes {
-			args += fmt.Sprintf(" %s", arg)
+		for _, p := range b.Pushes {
+			// add flag for Pushes from provided build command
+			flags = append(flags, "--push", p)
 		}
-		// add flag for Pushes from provided build command
-		flags = append(flags, fmt.Sprintf("--push=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	redisFlags, err := b.RedisCache.Flags()
@@ -335,35 +328,33 @@ func (b *Build) Command() (*exec.Cmd, error) {
 	// check if RegistryConfig is provided
 	if len(b.RegistryConfig) > 0 {
 		// add flag for RegistryConfig from provided build command
-		flags = append(flags, fmt.Sprintf("--registry-config=%s", b.RegistryConfig))
+		flags = append(flags, "--registry-config", b.RegistryConfig)
 	}
 
 	// check if Replicas is provided
 	if len(b.Replicas) > 0 {
-		var args string
-		for _, arg := range b.Replicas {
-			args += fmt.Sprintf(" %s", arg)
+		for _, r := range b.Replicas {
+			// add flag for Replicas from provided build command
+			flags = append(flags, "--replica", r)
 		}
-		// add flag for Replicas from provided build command
-		flags = append(flags, fmt.Sprintf("--replica=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	// check if Tag is provided
 	if len(b.Storage) > 0 {
 		// add flag for Tag from provided build command
-		flags = append(flags, fmt.Sprintf("--storage=%s", b.Storage))
+		flags = append(flags, "--storage", b.Storage)
 	}
 
 	// check if Tag is provided
 	if len(b.Tag) > 0 {
 		// add flag for Tag from provided build command
-		flags = append(flags, fmt.Sprintf("--tag=%s", b.Tag))
+		flags = append(flags, "--tag", b.Tag)
 	}
 
 	// check if Target is provided
 	if len(b.Target) > 0 {
 		// add flag for Target from provided build command
-		flags = append(flags, fmt.Sprintf("--target=%s", b.Target))
+		flags = append(flags, "--target", b.Target)
 	}
 
 	// add the required directory param
@@ -473,19 +464,19 @@ func (d *Docker) Flags() []string {
 	// check if Host is provided
 	if len(d.Host) > 0 {
 		// add flag for Host from provided build command
-		flags = append(flags, fmt.Sprintf("--docker-host=%s", d.Host))
+		flags = append(flags, "--docker-host", d.Host)
 	}
 
 	// check if Scheme is provided
 	if len(d.Scheme) > 0 {
 		// add flag for Scheme from provided build command
-		flags = append(flags, fmt.Sprintf("--docker-scheme=%s", d.Scheme))
+		flags = append(flags, "--docker-scheme", d.Scheme)
 	}
 
 	// check if Version is provided
 	if len(d.Version) > 0 {
 		// add flag for Version from provided build command
-		flags = append(flags, fmt.Sprintf("--docker-version=%s", d.Version))
+		flags = append(flags, "--docker-version", d.Version)
 	}
 
 	return flags
@@ -500,17 +491,15 @@ func (h *HTTPCache) Flags() []string {
 	// check if Addr is provided
 	if len(h.Addr) > 0 {
 		// add flag for Addr from provided build command
-		flags = append(flags, fmt.Sprintf("--http-cache-addr=%s", h.Addr))
+		flags = append(flags, "--http-cache-addr", h.Addr)
 	}
 
 	// check if Headers is provided
 	if len(h.Headers) > 0 {
-		var args string
-		for _, arg := range h.Headers {
-			args += fmt.Sprintf(" %s", arg)
+		for _, h := range h.Headers {
+			// add flag for BuildArgs from provided build command
+			flags = append(flags, "--http-cache-header", h)
 		}
-		// add flag for BuildArgs from provided build command
-		flags = append(flags, fmt.Sprintf("--http-cache-header=%s", strings.TrimPrefix(args, " ")))
 	}
 
 	return flags
@@ -525,13 +514,13 @@ func (r *RedisCache) Flags() ([]string, error) {
 	// check if Addr is provided
 	if len(r.Addr) > 0 {
 		// add flag for Addr from provided build command
-		flags = append(flags, fmt.Sprintf("--redis-cache-addr=%s", r.Addr))
+		flags = append(flags, "--redis-cache-addr", r.Addr)
 	}
 
 	// check if Password is provided
 	if len(r.Password) > 0 {
 		// add flag for Password from provided build command
-		flags = append(flags, fmt.Sprintf("--redis-cache-password=%s", r.Password))
+		flags = append(flags, "--redis-cache-password", r.Password)
 	}
 
 	// check if TTL is provided
@@ -544,7 +533,7 @@ func (r *RedisCache) Flags() ([]string, error) {
 		// check if TTL is valid duration
 		if duration > 0 {
 			// add flag for TTL from provided build command
-			flags = append(flags, fmt.Sprintf("--redis-cache-ttl=%s", duration))
+			flags = append(flags, "--redis-cache-ttl", duration.String())
 		}
 	}
 

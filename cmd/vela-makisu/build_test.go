@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os/exec"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -54,35 +55,35 @@ func TestMakisu_Build_Command(t *testing.T) {
 	want := exec.Command(
 		_makisu,
 		buildAction,
-		fmt.Sprintf("--build-arg=%s", b.BuildArgs[0]),
-		fmt.Sprintf("--commit=%s", b.Commit),
-		fmt.Sprintf("--compression=%s", b.Compression),
-		fmt.Sprintf("--blacklist=%s", b.DenyList[0]),
-		fmt.Sprintf("--docker-host=%s", b.Docker.Host),
-		fmt.Sprintf("--docker-scheme=%s", b.Docker.Scheme),
-		fmt.Sprintf("--docker-version=%s", b.Docker.Version),
-		fmt.Sprintf("--dest=%s", b.Destination),
-		fmt.Sprintf("--file=%s", b.File),
-		fmt.Sprintf("--http-cache-addr=%s", b.HTTPCache.Addr),
-		fmt.Sprintf("--http-cache-header=%s", b.HTTPCache.Headers[0]),
+		fmt.Sprintf("--build-arg %s", b.BuildArgs[0]),
+		fmt.Sprintf("--commit %s", b.Commit),
+		fmt.Sprintf("--compression %s", b.Compression),
+		fmt.Sprintf("--blacklist %s", b.DenyList[0]),
+		fmt.Sprintf("--docker-host %s", b.Docker.Host),
+		fmt.Sprintf("--docker-scheme %s", b.Docker.Scheme),
+		fmt.Sprintf("--docker-version %s", b.Docker.Version),
+		fmt.Sprintf("--dest %s", b.Destination),
+		fmt.Sprintf("--file %s", b.File),
+		fmt.Sprintf("--http-cache-addr %s", b.HTTPCache.Addr),
+		fmt.Sprintf("--http-cache-header %s", b.HTTPCache.Headers[0]),
 		"--load",
-		fmt.Sprintf("--local-cache-ttl=%s", b.LocalCacheTTL),
+		fmt.Sprintf("--local-cache-ttl %s", b.LocalCacheTTL),
 		"--modifyfs",
 		"--preserve-root",
-		fmt.Sprintf("--push=%s", b.Pushes[0]),
-		fmt.Sprintf("--redis-cache-addr=%s", b.RedisCache.Addr),
-		fmt.Sprintf("--redis-cache-password=%s", b.RedisCache.Password),
-		fmt.Sprintf("--redis-cache-ttl=%s", b.RedisCache.TTL),
-		fmt.Sprintf("--registry-config=%s", b.RegistryConfig),
-		fmt.Sprintf("--replica=%s", b.Replicas[0]),
-		fmt.Sprintf("--storage=%s", b.Storage),
-		fmt.Sprintf("--tag=%s", b.Tag),
-		fmt.Sprintf("--target=%s", b.Target),
+		fmt.Sprintf("--push %s", b.Pushes[0]),
+		fmt.Sprintf("--redis-cache-addr %s", b.RedisCache.Addr),
+		fmt.Sprintf("--redis-cache-password %s", b.RedisCache.Password),
+		fmt.Sprintf("--redis-cache-ttl %s", b.RedisCache.TTL),
+		fmt.Sprintf("--registry-config %s", b.RegistryConfig),
+		fmt.Sprintf("--replica %s", b.Replicas[0]),
+		fmt.Sprintf("--storage %s", b.Storage),
+		fmt.Sprintf("--tag %s", b.Tag),
+		fmt.Sprintf("--target %s", b.Target),
 		".",
 	)
 
 	got, _ := b.Command()
-	if !reflect.DeepEqual(got, want) {
+	if !strings.EqualFold(got.String(), want.String()) {
 		t.Errorf("Command is %v, want %v", got, want)
 	}
 }
