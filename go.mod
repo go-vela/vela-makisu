@@ -11,7 +11,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/afero v1.5.1
-	github.com/uber/makisu v0.4.1
+	github.com/uber/makisu v0.4.2
 	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/net v0.0.0-20200625001655-4c5254603344 // indirect
 	golang.org/x/sys v0.0.0-20210108172913-0df2131ae363 // indirect
