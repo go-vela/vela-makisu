@@ -2,7 +2,7 @@
 ##    docker build --no-cache --target certs -t vela-makisu:binary .   ##
 #########################################################################
 
-FROM gcr.io/uber-container-tools/makisu:v0.4.1 as makisu
+FROM gcr.io/uber-container-tools/makisu:v0.4.2 as makisu
 
 #########################################################################
 ##    docker build --no-cache --target certs -t vela-makisu:certs .    ##
