@@ -10,7 +10,7 @@ require (
 	github.com/go-vela/types v0.7.4
 	github.com/joho/godotenv v1.3.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/afero v1.5.1
+	github.com/spf13/afero v1.6.0
 	github.com/uber/makisu v0.4.2
 	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/net v0.0.0-20200625001655-4c5254603344 // indirect
