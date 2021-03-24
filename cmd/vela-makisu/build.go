@@ -62,7 +62,7 @@ type (
 		RedisCache *RedisCache
 		// enables setting custom redis server for caching
 		RedisCacheRaw string
-		// enables setting registry configuration for authentication
+		// enables setting registry configuration JSON for authentication, push_chunk, timeout, etc.
 		RegistryConfig string
 		// enables setting pushing image to alternative targets i.e. \"<registry>/<repo>:<tag>\"
 		Replicas []string
@@ -200,6 +200,12 @@ var buildFlags = []cli.Flag{
 		FilePath: string("/vela/parameters/makisu/build/redis_cache_options,/vela/secrets/makisu/build/redis_cache_options"),
 		Name:     "build.redis-cache-options",
 		Usage:    "enables setting custom redis server for caching",
+	},
+	&cli.StringFlag{
+		EnvVars:  []string{"PARAMETER_REGISTRY_CONFIG"},
+		FilePath: string("/vela/parameters/makisu/build/registry_config,/vela/secrets/makisu/build/registry_config"),
+		Name:     "build.registry-config",
+		Usage:    "enables passing some arbitrary registry configuration as JSON, such as push_chunk and timeout",
 	},
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_REPLICAS"},
