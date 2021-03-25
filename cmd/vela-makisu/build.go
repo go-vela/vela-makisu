@@ -183,9 +183,9 @@ var buildFlags = []cli.Flag{
 		Value:    true,
 	},
 	&cli.BoolFlag{
-		EnvVars:  []string{"PARAMETER_PERSERVE_ROOT"},
-		FilePath: string("/vela/parameters/makisu/build/perserve_root,/vela/secrets/makisu/build/perserve_root"),
-		Name:     "build.perserve-root",
+		EnvVars:  []string{"PARAMETER_PRESERVE_ROOT"},
+		FilePath: string("/vela/parameters/makisu/build/preserve_root,/vela/secrets/makisu/build/preserve_root"),
+		Name:     "build.preserve-root",
 		Usage:    "enables setting copying storage from root in the storage during and after build",
 		Value:    true,
 	},

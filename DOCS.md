@@ -131,7 +131,7 @@ The following parameters are used to configure the build and push process:
 | `load`            | enables loading a docker image into the docker daemon post build     | `false`  | `N/A`   |
 | `local_cache_ttl` | a time to live for the local docker cache (default 168h0m0s)         | `false`  | `N/A`   |
 | `modify_fs`       | makisu to modify files outside its internal storage directories      | `false`  | `N/A`   |
-| `perserve_root`   | copying storage from root in the storage during and after build      | `false`  | `N/A`   |
+| `preserve_root`   | copying storage from root in the storage during and after build      | `false`  | `N/A`   |
 | `pushes`          | registries to push the image to                                      | `false`  | `N/A`   |
 | `redis_cache`     | custom redis server for caching                                      | `false`  | `N/A`   |
 | `replicas`        | pushing image to alternative targets i.e. `<registry>/<repo>:<tag>`  | `false`  | `N/A`   |

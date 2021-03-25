@@ -123,7 +123,7 @@ func run(c *cli.Context) error {
 			Load:           c.Bool("build.load"),
 			LocalCacheTTL:  c.Duration("build.local-cache-ttl"),
 			ModifyFS:       c.Bool("build.modify-fs"),
-			PreserveRoot:   c.Bool("build.perserve-root"),
+			PreserveRoot:   c.Bool("build.preserve-root"),
 			Pushes:         c.StringSlice("build.pushes"),
 			RedisCacheRaw:  c.String("build.redis-cache-options"),
 			RegistryConfig: c.String("build.registry-config"),
