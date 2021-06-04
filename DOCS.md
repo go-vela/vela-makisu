@@ -6,6 +6,12 @@ Source Code: https://github.com/go-vela/vela-makisu
 
 Registry: https://hub.docker.com/r/target/vela-makisu
 
+{{% notice warning %}}
+As of May 2021, makisu has been deprecated by the maintainers upstream. Therefore, this plugin will also be deprecated and not receive updates. It is suggested to use a different docker option. At an undecided later date it will be removed entirely.
+
+https://github.com/uber-archive/makisu/issues/365
+{{% /notice %}}
+
 ## Usage
 
 **NOTE: It is not recommended to use `latest` as the tag for the Docker image. Users should use a semantically versioned tag instead.**
