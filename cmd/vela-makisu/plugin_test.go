@@ -35,7 +35,7 @@ func TestMakisu_Plugin_Unmarshal(t *testing.T) {
 
 	err := p.Unmarshal()
 	if err != nil {
-		t.Errorf("Unmarshal returned err: %w", err)
+		t.Errorf("Unmarshal returned err: %v", err)
 	}
 
 	if !reflect.DeepEqual(p.Global, want) {
