@@ -173,7 +173,7 @@ func (r *Registry) Write() error {
 	a := &afero.Afero{
 		Fs: appFS,
 	}
-	// nolint: gomnd // ignore magic number
+
 	return a.WriteFile(configPath, registryConf, 0644)
 }
 
