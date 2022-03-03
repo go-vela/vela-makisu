@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Target Brands, Inr. All rights reserved.
+// Copyright (c) 2022 Target Brands, Inc. All rights reserved.
 //
 // Use of this source code is governed by the LICENSE file in this repository.
 
@@ -90,7 +90,6 @@ var (
 	appFS = afero.NewOsFs()
 
 	// configFlags represents for config settings on the cli.
-	// nolint
 	configFlags = []cli.Flag{
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_REGISTRY", "REGISTRY_NAME"},

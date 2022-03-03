@@ -51,7 +51,7 @@ func TestMakisu_Plugin_Validate(t *testing.T) {
 			Name:     "index.docker.io",
 			Username: "octocat",
 		},
-		//nolint
+
 		Build: &Build{
 			BuildArgs:   []string{"FOO"},
 			Context:     ".",

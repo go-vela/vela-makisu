@@ -13,7 +13,6 @@ import (
 
 func TestMakisu_Build_Command(t *testing.T) {
 	// setup types
-	// nolint
 	b := &Build{
 		BuildArgs:   []string{"FOO"},
 		Context:     ".",
@@ -48,7 +47,7 @@ func TestMakisu_Build_Command(t *testing.T) {
 		Target:         "dev",
 	}
 
-	// nolint // this functionality is not exploitable the way
+	// nolint: gosec // this functionality is not exploitable the way
 	// the plugin accepts configuration
 	want := exec.Command(
 		_makisu,

@@ -14,7 +14,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// nolint
 const buildAction = "build"
 
 type (
@@ -22,7 +21,6 @@ type (
 	//
 	// Makisu documents their command usage:
 	// https://github.com/uber/makisu/blob/master/docs/COMMAND.md
-	// nolint
 	Build struct {
 		// enables setting build time arguments for the Dockerfile
 		BuildArgs []string
@@ -30,7 +28,7 @@ type (
 		Commit string
 		// Image compression level, could be 'no', 'speed', 'size', 'default' (default "default")
 		Compression string
-		// enables settting the context for the image to be built
+		// enables setting the context for the image to be built
 		Context string
 		// enables setting list of locations to be ignored within docker image
 		DenyList []string
@@ -107,7 +105,6 @@ type (
 )
 
 // buildFlags represents for config settings on the cli.
-//nolint
 var buildFlags = []cli.Flag{
 	&cli.StringSliceFlag{
 		EnvVars:  []string{"PARAMETER_BUILD_ARGS"},
@@ -235,7 +232,6 @@ var buildFlags = []cli.Flag{
 
 // Command formats and outputs the Build command from
 // the provided configuration to build a Docker image.
-// nolint
 func (b *Build) Command() (*exec.Cmd, error) {
 	logrus.Trace("creating makisu build command from plugin configuration")
 
@@ -366,7 +362,7 @@ func (b *Build) Command() (*exec.Cmd, error) {
 	// add the required directory param
 	flags = append(flags, b.Context)
 
-	// nolint // this functionality is not exploitable the way
+	// nolint: gosec // this functionality is not exploitable the way
 	// the plugin accepts configuration
 	return exec.Command(_makisu, append([]string{buildAction}, flags...)...), nil
 }
