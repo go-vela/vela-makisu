@@ -37,7 +37,6 @@ type (
 
 var (
 	// configFlags represents the global flags that can be set on the makisu commands.
-	// nolint
 	globalFlags = []cli.Flag{
 		&cli.StringFlag{
 			EnvVars:  []string{"PARAMETER_GLOBAL_FLAGS"},
