@@ -1,3 +1,6 @@
+‼️ Makisu has been deprecated and archived upstream. This plugin has been retired as a result.
+
+
 # vela-makisu
 
 [![license](https://img.shields.io/crates/l/gl.svg)](../LICENSE)
